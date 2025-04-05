@@ -11,6 +11,62 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		6477FC91B071452C817DCF68 /* app_icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AE0A5F740519485FA19CD572 /* app_icons.ttf */; };
+		BE1DFAFA53CA485C9600A403 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B84377FD7CF04A8091A19EE6 /* Comfortaa-Bold.ttf */; };
+		2462AF96D16E4C15B8CAE8CA /* Dongle-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AC6E5432FCE4D5C86DF968F /* Dongle-Bold.ttf */; };
+		A31F20E2D6684FD2B86B08BC /* Dongle-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5F48E9C80CF41E2B6DACA3B /* Dongle-Light.ttf */; };
+		3A83C87D5D614198BE1B09B8 /* Dongle-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6002DB2302A240C8BCA8D076 /* Dongle-Regular.ttf */; };
+		657783140B1743E6BF1E2BB1 /* Inder-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFEAF697A041414481637028 /* Inder-Regular.ttf */; };
+		9EAC32E208454BA49A75CE5A /* Inter-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 058B6B87806545729F52227E /* Inter-Black.ttf */; };
+		3CEA080B79D543729DEABA46 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50AC9C55826B42369260A799 /* Inter-Bold.ttf */; };
+		E540891C067D436D9284507E /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 998E83DB6BD24645B14270D2 /* Inter-ExtraBold.ttf */; };
+		0B3389DA843B4EF5B52846B4 /* Inter-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DABF7162A4443F08883D773 /* Inter-ExtraLight.ttf */; };
+		0A632D1E43674B41B0D4FE03 /* Inter-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60475C0BE79C4E428731374D /* Inter-Light.ttf */; };
+		23D37744513F406CA88BC1B6 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5110F9AB00184E888559CB03 /* Inter-Medium.ttf */; };
+		39CA1B235A914295A82957EE /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C881FF1597C4325BEDE81CB /* Inter-Regular.ttf */; };
+		E775BE8C03D54CBF896A23D5 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0432A18BE454B8CBEA01E3F /* Inter-SemiBold.ttf */; };
+		704902FF2C5A44F59539F2E6 /* Inter-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EC501733ED846DBAE01CB1B /* Inter-Thin.ttf */; };
+		3F4E283C315C4BA6A302FF20 /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 56D216156BCC499CACE52801 /* Lobster-Regular.ttf */; };
+		1A7803DF7BC04BFEB3148F8B /* Pacifico-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5CCAFB0166F4812B64DEAFF /* Pacifico-Regular.ttf */; };
+		259362A951CA4A84A4E78697 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82C58D3245924735826D9143 /* Poppins-Black.ttf */; };
+		39ECCE8222C04DE0A1535D88 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA5C9C3A1FA24FF8AC3D5B8D /* Poppins-Bold.ttf */; };
+		D915C62ADE1848E282B89EF7 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CC261959F74D435596345465 /* Poppins-ExtraBold.ttf */; };
+		AE0615E59FF0479FAFC76FFF /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B51D5C90442147009F33A534 /* Poppins-ExtraLight.ttf */; };
+		B0E53A0BD3834AC094E11388 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AE5249D955A746678FBABF5F /* Poppins-Light.ttf */; };
+		86417F068A694189B4BB31DF /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31C08A02145A4DE989D4CF1C /* Poppins-Medium.ttf */; };
+		7EE61B44590746B68B61CA05 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6FE3CD6E8544209BCE8AE68 /* Poppins-Regular.ttf */; };
+		B9B51B99CE2148A5B5D140E8 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A7E91D3C1BB5415AB0F07FF6 /* Poppins-SemiBold.ttf */; };
+		8F43F4D4601C4359BA9F95B9 /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C581FAB2171C43BF9219F371 /* Poppins-Thin.ttf */; };
+		94F2AE28C61B441AA27DCD65 /* amazonpay.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CBA6B203DE4C1980360C7C /* amazonpay.png */; };
+		0A01A5E61E874D6092FFC8F9 /* angle_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 04C84150B0CC4C398B6830A7 /* angle_left.png */; };
+		9F27307DDE0441BD98D2881D /* applepay.png in Resources */ = {isa = PBXBuildFile; fileRef = D9BB302EC604496E8CACC758 /* applepay.png */; };
+		A8EAB3C1BBFD4407B23B683D /* avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = 9AAAC08913FD49B7BF880432 /* avatar.png */; };
+		6EA725ABC38744B6BE7F8D77 /* avt_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A00F30E85554BBC806BA7F4 /* avt_1.png */; };
+		B863E4FE80FE48FA8005E976 /* barcode.png in Resources */ = {isa = PBXBuildFile; fileRef = D93DED64552A4221B2ADA21E /* barcode.png */; };
+		9DB8C529CF644831BFE08971 /* bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A5B173BBAC05401280B7039F /* bg.jpg */; };
+		5F67053310624EEA91BB6E06 /* cart.png in Resources */ = {isa = PBXBuildFile; fileRef = 57FA54108C14467880F48B29 /* cart.png */; };
+		D2064474B6894E49AEAB92BE /* cowbell.png in Resources */ = {isa = PBXBuildFile; fileRef = 677A741BA47F4BCC80E7DB3B /* cowbell.png */; };
+		E87667751556443885FEA3D9 /* favourite.png in Resources */ = {isa = PBXBuildFile; fileRef = CABF798AC6FB4489BD54FA33 /* favourite.png */; };
+		CEC6F65D46034512A9A09E29 /* gpay.png in Resources */ = {isa = PBXBuildFile; fileRef = C6C2FED7329C4C3899522F58 /* gpay.png */; };
+		81A5E47218454FD0AB1E4079 /* iconapp.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F631E5DEB084D8AA5B3C42F /* iconapp.png */; };
+		868F61D1F343469786799F6C /* icon_app.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BF913E10C64949899E5CD26A /* icon_app.jpg */; };
+		44C8470C7E864A55905BBC0B /* icon_app_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56D4D94DEA9149498EB2B088 /* icon_app_2.jpg */; };
+		281508D0573B4300ABA9BBFB /* logomini.png in Resources */ = {isa = PBXBuildFile; fileRef = 76E3866FE01D47DB8C240DC3 /* logomini.png */; };
+		A7D52547F7B14EBDB432F210 /* logout.png in Resources */ = {isa = PBXBuildFile; fileRef = 58003EF246964E3F920ABD99 /* logout.png */; };
+		D3E6DCC5B9154F8999A74292 /* logo_round.png in Resources */ = {isa = PBXBuildFile; fileRef = 69C6348AF7674D9B9808F7C2 /* logo_round.png */; };
+		7B6512AE07F84CA590BD6F75 /* marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A58702D76DD487793159606 /* marker.png */; };
+		687D93A3DD8E44098A64A562 /* marker_1.png in Resources */ = {isa = PBXBuildFile; fileRef = A1536EE85B1344F69CEC8CDD /* marker_1.png */; };
+		FF2AD19AC6AC4364A12A321E /* nen.png in Resources */ = {isa = PBXBuildFile; fileRef = 21BEBA89CB744238A50BC46A /* nen.png */; };
+		1DBAA9A76FC6454D8A6716FD /* nenthe.png in Resources */ = {isa = PBXBuildFile; fileRef = 660D1AF87175439D85797278 /* nenthe.png */; };
+		E767EDA396A5465A9467BD7B /* pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = 98C13E9073A346048BBC62AF /* pencil.png */; };
+		0AFE019E0D5948D48082855C /* profile.png in Resources */ = {isa = PBXBuildFile; fileRef = F9939FA912ED4930B17A0BFC /* profile.png */; };
+		703C1078EEDD47F3B0886E2D /* resume.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BC0D42B3E1C4ADA8B31CEE8 /* resume.png */; };
+		F5C9F91AEBC346F99C3FECD7 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 15EC710A9B5F4FEBBE71B37F /* settings.png */; };
+		03ADF4A255C8424682B2047D /* slide.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D080281EFB46B78EA76D57 /* slide.png */; };
+		726D7DB517C941E998B3752D /* vc_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 2FFD75EC91C04567A43E056B /* vc_b.png */; };
+		2E72AA97F63A4C96BC982390 /* voucher_2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = A90F7FE3C9C94AF7BFAC3E28 /* voucher_2.jpeg */; };
+		6635D115B75C465582CE4ECE /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = C2DAB2BFA3BC49808D395065 /* OFL.txt */; };
+		B0C387BBCF3441A283F13460 /* logo_gg.png in Resources */ = {isa = PBXBuildFile; fileRef = E85E0C3F0139468A8824367E /* logo_gg.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +91,62 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = hmdrinks_shipper/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = hmdrinks_shipper/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		AE0A5F740519485FA19CD572 /* app_icons.ttf */ = {isa = PBXFileReference; name = "app_icons.ttf"; path = "../src/assets/fonts/app_icons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B84377FD7CF04A8091A19EE6 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Bold.ttf"; path = "../src/assets/fonts/Comfortaa-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8AC6E5432FCE4D5C86DF968F /* Dongle-Bold.ttf */ = {isa = PBXFileReference; name = "Dongle-Bold.ttf"; path = "../src/assets/fonts/Dongle-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D5F48E9C80CF41E2B6DACA3B /* Dongle-Light.ttf */ = {isa = PBXFileReference; name = "Dongle-Light.ttf"; path = "../src/assets/fonts/Dongle-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6002DB2302A240C8BCA8D076 /* Dongle-Regular.ttf */ = {isa = PBXFileReference; name = "Dongle-Regular.ttf"; path = "../src/assets/fonts/Dongle-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DFEAF697A041414481637028 /* Inder-Regular.ttf */ = {isa = PBXFileReference; name = "Inder-Regular.ttf"; path = "../src/assets/fonts/Inder-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		058B6B87806545729F52227E /* Inter-Black.ttf */ = {isa = PBXFileReference; name = "Inter-Black.ttf"; path = "../src/assets/fonts/Inter-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		50AC9C55826B42369260A799 /* Inter-Bold.ttf */ = {isa = PBXFileReference; name = "Inter-Bold.ttf"; path = "../src/assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		998E83DB6BD24645B14270D2 /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Inter-ExtraBold.ttf"; path = "../src/assets/fonts/Inter-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9DABF7162A4443F08883D773 /* Inter-ExtraLight.ttf */ = {isa = PBXFileReference; name = "Inter-ExtraLight.ttf"; path = "../src/assets/fonts/Inter-ExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		60475C0BE79C4E428731374D /* Inter-Light.ttf */ = {isa = PBXFileReference; name = "Inter-Light.ttf"; path = "../src/assets/fonts/Inter-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5110F9AB00184E888559CB03 /* Inter-Medium.ttf */ = {isa = PBXFileReference; name = "Inter-Medium.ttf"; path = "../src/assets/fonts/Inter-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1C881FF1597C4325BEDE81CB /* Inter-Regular.ttf */ = {isa = PBXFileReference; name = "Inter-Regular.ttf"; path = "../src/assets/fonts/Inter-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E0432A18BE454B8CBEA01E3F /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; name = "Inter-SemiBold.ttf"; path = "../src/assets/fonts/Inter-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5EC501733ED846DBAE01CB1B /* Inter-Thin.ttf */ = {isa = PBXFileReference; name = "Inter-Thin.ttf"; path = "../src/assets/fonts/Inter-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		56D216156BCC499CACE52801 /* Lobster-Regular.ttf */ = {isa = PBXFileReference; name = "Lobster-Regular.ttf"; path = "../src/assets/fonts/Lobster-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E5CCAFB0166F4812B64DEAFF /* Pacifico-Regular.ttf */ = {isa = PBXFileReference; name = "Pacifico-Regular.ttf"; path = "../src/assets/fonts/Pacifico-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		82C58D3245924735826D9143 /* Poppins-Black.ttf */ = {isa = PBXFileReference; name = "Poppins-Black.ttf"; path = "../src/assets/fonts/Poppins-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DA5C9C3A1FA24FF8AC3D5B8D /* Poppins-Bold.ttf */ = {isa = PBXFileReference; name = "Poppins-Bold.ttf"; path = "../src/assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CC261959F74D435596345465 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B51D5C90442147009F33A534 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AE5249D955A746678FBABF5F /* Poppins-Light.ttf */ = {isa = PBXFileReference; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		31C08A02145A4DE989D4CF1C /* Poppins-Medium.ttf */ = {isa = PBXFileReference; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F6FE3CD6E8544209BCE8AE68 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A7E91D3C1BB5415AB0F07FF6 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C581FAB2171C43BF9219F371 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		89CBA6B203DE4C1980360C7C /* amazonpay.png */ = {isa = PBXFileReference; name = "amazonpay.png"; path = "../src/assets/app_images/amazonpay.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		04C84150B0CC4C398B6830A7 /* angle_left.png */ = {isa = PBXFileReference; name = "angle_left.png"; path = "../src/assets/app_images/angle_left.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D9BB302EC604496E8CACC758 /* applepay.png */ = {isa = PBXFileReference; name = "applepay.png"; path = "../src/assets/app_images/applepay.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9AAAC08913FD49B7BF880432 /* avatar.png */ = {isa = PBXFileReference; name = "avatar.png"; path = "../src/assets/app_images/avatar.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5A00F30E85554BBC806BA7F4 /* avt_1.png */ = {isa = PBXFileReference; name = "avt_1.png"; path = "../src/assets/app_images/avt_1.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D93DED64552A4221B2ADA21E /* barcode.png */ = {isa = PBXFileReference; name = "barcode.png"; path = "../src/assets/app_images/barcode.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A5B173BBAC05401280B7039F /* bg.jpg */ = {isa = PBXFileReference; name = "bg.jpg"; path = "../src/assets/app_images/bg.jpg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		57FA54108C14467880F48B29 /* cart.png */ = {isa = PBXFileReference; name = "cart.png"; path = "../src/assets/app_images/cart.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		677A741BA47F4BCC80E7DB3B /* cowbell.png */ = {isa = PBXFileReference; name = "cowbell.png"; path = "../src/assets/app_images/cowbell.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CABF798AC6FB4489BD54FA33 /* favourite.png */ = {isa = PBXFileReference; name = "favourite.png"; path = "../src/assets/app_images/favourite.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C6C2FED7329C4C3899522F58 /* gpay.png */ = {isa = PBXFileReference; name = "gpay.png"; path = "../src/assets/app_images/gpay.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3F631E5DEB084D8AA5B3C42F /* iconapp.png */ = {isa = PBXFileReference; name = "iconapp.png"; path = "../src/assets/app_images/iconapp.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BF913E10C64949899E5CD26A /* icon_app.jpg */ = {isa = PBXFileReference; name = "icon_app.jpg"; path = "../src/assets/app_images/icon_app.jpg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		56D4D94DEA9149498EB2B088 /* icon_app_2.jpg */ = {isa = PBXFileReference; name = "icon_app_2.jpg"; path = "../src/assets/app_images/icon_app_2.jpg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		76E3866FE01D47DB8C240DC3 /* logomini.png */ = {isa = PBXFileReference; name = "logomini.png"; path = "../src/assets/app_images/logomini.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		58003EF246964E3F920ABD99 /* logout.png */ = {isa = PBXFileReference; name = "logout.png"; path = "../src/assets/app_images/logout.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		69C6348AF7674D9B9808F7C2 /* logo_round.png */ = {isa = PBXFileReference; name = "logo_round.png"; path = "../src/assets/app_images/logo_round.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8A58702D76DD487793159606 /* marker.png */ = {isa = PBXFileReference; name = "marker.png"; path = "../src/assets/app_images/marker.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A1536EE85B1344F69CEC8CDD /* marker_1.png */ = {isa = PBXFileReference; name = "marker_1.png"; path = "../src/assets/app_images/marker_1.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		21BEBA89CB744238A50BC46A /* nen.png */ = {isa = PBXFileReference; name = "nen.png"; path = "../src/assets/app_images/nen.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		660D1AF87175439D85797278 /* nenthe.png */ = {isa = PBXFileReference; name = "nenthe.png"; path = "../src/assets/app_images/nenthe.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		98C13E9073A346048BBC62AF /* pencil.png */ = {isa = PBXFileReference; name = "pencil.png"; path = "../src/assets/app_images/pencil.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F9939FA912ED4930B17A0BFC /* profile.png */ = {isa = PBXFileReference; name = "profile.png"; path = "../src/assets/app_images/profile.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7BC0D42B3E1C4ADA8B31CEE8 /* resume.png */ = {isa = PBXFileReference; name = "resume.png"; path = "../src/assets/app_images/resume.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		15EC710A9B5F4FEBBE71B37F /* settings.png */ = {isa = PBXFileReference; name = "settings.png"; path = "../src/assets/app_images/settings.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B2D080281EFB46B78EA76D57 /* slide.png */ = {isa = PBXFileReference; name = "slide.png"; path = "../src/assets/app_images/slide.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2FFD75EC91C04567A43E056B /* vc_b.png */ = {isa = PBXFileReference; name = "vc_b.png"; path = "../src/assets/app_images/vc_b.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A90F7FE3C9C94AF7BFAC3E28 /* voucher_2.jpeg */ = {isa = PBXFileReference; name = "voucher_2.jpeg"; path = "../src/assets/app_images/voucher_2.jpeg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C2DAB2BFA3BC49808D395065 /* OFL.txt */ = {isa = PBXFileReference; name = "OFL.txt"; path = "../src/assets/fonts/OFL.txt"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E85E0C3F0139468A8824367E /* logo_gg.png */ = {isa = PBXFileReference; name = "logo_gg.png"; path = "../src/assets/app_images/logo_gg.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +205,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				9CE4F6203D57405DAA1D57F0 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,6 +228,70 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		9CE4F6203D57405DAA1D57F0 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				AE0A5F740519485FA19CD572 /* app_icons.ttf */,
+				B84377FD7CF04A8091A19EE6 /* Comfortaa-Bold.ttf */,
+				8AC6E5432FCE4D5C86DF968F /* Dongle-Bold.ttf */,
+				D5F48E9C80CF41E2B6DACA3B /* Dongle-Light.ttf */,
+				6002DB2302A240C8BCA8D076 /* Dongle-Regular.ttf */,
+				DFEAF697A041414481637028 /* Inder-Regular.ttf */,
+				058B6B87806545729F52227E /* Inter-Black.ttf */,
+				50AC9C55826B42369260A799 /* Inter-Bold.ttf */,
+				998E83DB6BD24645B14270D2 /* Inter-ExtraBold.ttf */,
+				9DABF7162A4443F08883D773 /* Inter-ExtraLight.ttf */,
+				60475C0BE79C4E428731374D /* Inter-Light.ttf */,
+				5110F9AB00184E888559CB03 /* Inter-Medium.ttf */,
+				1C881FF1597C4325BEDE81CB /* Inter-Regular.ttf */,
+				E0432A18BE454B8CBEA01E3F /* Inter-SemiBold.ttf */,
+				5EC501733ED846DBAE01CB1B /* Inter-Thin.ttf */,
+				56D216156BCC499CACE52801 /* Lobster-Regular.ttf */,
+				E5CCAFB0166F4812B64DEAFF /* Pacifico-Regular.ttf */,
+				82C58D3245924735826D9143 /* Poppins-Black.ttf */,
+				DA5C9C3A1FA24FF8AC3D5B8D /* Poppins-Bold.ttf */,
+				CC261959F74D435596345465 /* Poppins-ExtraBold.ttf */,
+				B51D5C90442147009F33A534 /* Poppins-ExtraLight.ttf */,
+				AE5249D955A746678FBABF5F /* Poppins-Light.ttf */,
+				31C08A02145A4DE989D4CF1C /* Poppins-Medium.ttf */,
+				F6FE3CD6E8544209BCE8AE68 /* Poppins-Regular.ttf */,
+				A7E91D3C1BB5415AB0F07FF6 /* Poppins-SemiBold.ttf */,
+				C581FAB2171C43BF9219F371 /* Poppins-Thin.ttf */,
+				89CBA6B203DE4C1980360C7C /* amazonpay.png */,
+				04C84150B0CC4C398B6830A7 /* angle_left.png */,
+				D9BB302EC604496E8CACC758 /* applepay.png */,
+				9AAAC08913FD49B7BF880432 /* avatar.png */,
+				5A00F30E85554BBC806BA7F4 /* avt_1.png */,
+				D93DED64552A4221B2ADA21E /* barcode.png */,
+				A5B173BBAC05401280B7039F /* bg.jpg */,
+				57FA54108C14467880F48B29 /* cart.png */,
+				677A741BA47F4BCC80E7DB3B /* cowbell.png */,
+				CABF798AC6FB4489BD54FA33 /* favourite.png */,
+				C6C2FED7329C4C3899522F58 /* gpay.png */,
+				3F631E5DEB084D8AA5B3C42F /* iconapp.png */,
+				BF913E10C64949899E5CD26A /* icon_app.jpg */,
+				56D4D94DEA9149498EB2B088 /* icon_app_2.jpg */,
+				76E3866FE01D47DB8C240DC3 /* logomini.png */,
+				58003EF246964E3F920ABD99 /* logout.png */,
+				69C6348AF7674D9B9808F7C2 /* logo_round.png */,
+				8A58702D76DD487793159606 /* marker.png */,
+				A1536EE85B1344F69CEC8CDD /* marker_1.png */,
+				21BEBA89CB744238A50BC46A /* nen.png */,
+				660D1AF87175439D85797278 /* nenthe.png */,
+				98C13E9073A346048BBC62AF /* pencil.png */,
+				F9939FA912ED4930B17A0BFC /* profile.png */,
+				7BC0D42B3E1C4ADA8B31CEE8 /* resume.png */,
+				15EC710A9B5F4FEBBE71B37F /* settings.png */,
+				B2D080281EFB46B78EA76D57 /* slide.png */,
+				2FFD75EC91C04567A43E056B /* vc_b.png */,
+				A90F7FE3C9C94AF7BFAC3E28 /* voucher_2.jpeg */,
+				C2DAB2BFA3BC49808D395065 /* OFL.txt */,
+				E85E0C3F0139468A8824367E /* logo_gg.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -185,6 +362,62 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				6477FC91B071452C817DCF68 /* app_icons.ttf in Resources */,
+				BE1DFAFA53CA485C9600A403 /* Comfortaa-Bold.ttf in Resources */,
+				2462AF96D16E4C15B8CAE8CA /* Dongle-Bold.ttf in Resources */,
+				A31F20E2D6684FD2B86B08BC /* Dongle-Light.ttf in Resources */,
+				3A83C87D5D614198BE1B09B8 /* Dongle-Regular.ttf in Resources */,
+				657783140B1743E6BF1E2BB1 /* Inder-Regular.ttf in Resources */,
+				9EAC32E208454BA49A75CE5A /* Inter-Black.ttf in Resources */,
+				3CEA080B79D543729DEABA46 /* Inter-Bold.ttf in Resources */,
+				E540891C067D436D9284507E /* Inter-ExtraBold.ttf in Resources */,
+				0B3389DA843B4EF5B52846B4 /* Inter-ExtraLight.ttf in Resources */,
+				0A632D1E43674B41B0D4FE03 /* Inter-Light.ttf in Resources */,
+				23D37744513F406CA88BC1B6 /* Inter-Medium.ttf in Resources */,
+				39CA1B235A914295A82957EE /* Inter-Regular.ttf in Resources */,
+				E775BE8C03D54CBF896A23D5 /* Inter-SemiBold.ttf in Resources */,
+				704902FF2C5A44F59539F2E6 /* Inter-Thin.ttf in Resources */,
+				3F4E283C315C4BA6A302FF20 /* Lobster-Regular.ttf in Resources */,
+				1A7803DF7BC04BFEB3148F8B /* Pacifico-Regular.ttf in Resources */,
+				259362A951CA4A84A4E78697 /* Poppins-Black.ttf in Resources */,
+				39ECCE8222C04DE0A1535D88 /* Poppins-Bold.ttf in Resources */,
+				D915C62ADE1848E282B89EF7 /* Poppins-ExtraBold.ttf in Resources */,
+				AE0615E59FF0479FAFC76FFF /* Poppins-ExtraLight.ttf in Resources */,
+				B0E53A0BD3834AC094E11388 /* Poppins-Light.ttf in Resources */,
+				86417F068A694189B4BB31DF /* Poppins-Medium.ttf in Resources */,
+				7EE61B44590746B68B61CA05 /* Poppins-Regular.ttf in Resources */,
+				B9B51B99CE2148A5B5D140E8 /* Poppins-SemiBold.ttf in Resources */,
+				8F43F4D4601C4359BA9F95B9 /* Poppins-Thin.ttf in Resources */,
+				94F2AE28C61B441AA27DCD65 /* amazonpay.png in Resources */,
+				0A01A5E61E874D6092FFC8F9 /* angle_left.png in Resources */,
+				9F27307DDE0441BD98D2881D /* applepay.png in Resources */,
+				A8EAB3C1BBFD4407B23B683D /* avatar.png in Resources */,
+				6EA725ABC38744B6BE7F8D77 /* avt_1.png in Resources */,
+				B863E4FE80FE48FA8005E976 /* barcode.png in Resources */,
+				9DB8C529CF644831BFE08971 /* bg.jpg in Resources */,
+				5F67053310624EEA91BB6E06 /* cart.png in Resources */,
+				D2064474B6894E49AEAB92BE /* cowbell.png in Resources */,
+				E87667751556443885FEA3D9 /* favourite.png in Resources */,
+				CEC6F65D46034512A9A09E29 /* gpay.png in Resources */,
+				81A5E47218454FD0AB1E4079 /* iconapp.png in Resources */,
+				868F61D1F343469786799F6C /* icon_app.jpg in Resources */,
+				44C8470C7E864A55905BBC0B /* icon_app_2.jpg in Resources */,
+				281508D0573B4300ABA9BBFB /* logomini.png in Resources */,
+				A7D52547F7B14EBDB432F210 /* logout.png in Resources */,
+				D3E6DCC5B9154F8999A74292 /* logo_round.png in Resources */,
+				7B6512AE07F84CA590BD6F75 /* marker.png in Resources */,
+				687D93A3DD8E44098A64A562 /* marker_1.png in Resources */,
+				FF2AD19AC6AC4364A12A321E /* nen.png in Resources */,
+				1DBAA9A76FC6454D8A6716FD /* nenthe.png in Resources */,
+				E767EDA396A5465A9467BD7B /* pencil.png in Resources */,
+				0AFE019E0D5948D48082855C /* profile.png in Resources */,
+				703C1078EEDD47F3B0886E2D /* resume.png in Resources */,
+				F5C9F91AEBC346F99C3FECD7 /* settings.png in Resources */,
+				03ADF4A255C8424682B2047D /* slide.png in Resources */,
+				726D7DB517C941E998B3752D /* vc_b.png in Resources */,
+				2E72AA97F63A4C96BC982390 /* voucher_2.jpeg in Resources */,
+				6635D115B75C465582CE4ECE /* OFL.txt in Resources */,
+				B0C387BBCF3441A283F13460 /* logo_gg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
