@@ -6,5 +6,8 @@ export type RootStackParamList = {
     Other: undefined;
     Main: undefined;
     LanguageChange:  undefined;
+    ShipmentDetails: { shipmentId: number };
+    Notification: { userId: number } | undefined;
+    ChatWithUser: { shipmentId: number };
   };
   

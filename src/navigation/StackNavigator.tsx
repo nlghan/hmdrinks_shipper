@@ -7,7 +7,9 @@ import Info from '../screens/Info';
 import Other from '../screens/Other';
 import TabNavigator from './TabNavigator';
 import LanguageChange from '../screens/LanguagChange';
-
+import ShipmentDetails from '../screens/ShipmentDetails';
+import NotificationScreen from '../screens/Notification'; 
+import ChatWithUser from '../screens/ChatWithUser';
 
 // ✅ Định nghĩa kiểu cho danh sách các màn hình
 export type RootStackParamList = {
@@ -17,6 +19,9 @@ export type RootStackParamList = {
   Other: undefined;
   Main: undefined;
   LanguageChange:  undefined;
+  ShipmentDetails: { shipmentId: number };
+  Notification: undefined;
+  ChatWithUser: { shipmentId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -40,6 +45,9 @@ const StackNavigator = () => {
       <Stack.Screen name="Info" component={Info} options={{ headerShown: false }} />    
       <Stack.Screen name="Other" component={Other} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="LanguageChange" component={LanguageChange} options={{ headerShown: false, animation: 'slide_from_right' }} />
+      <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, animation: 'slide_from_right' }}/>
+      <Stack.Screen name="ChatWithUser" component={ChatWithUser} options={{ headerShown: false, animation: 'slide_from_right' }} />
       
     </Stack.Navigator>
   );
