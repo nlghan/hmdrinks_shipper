@@ -128,9 +128,16 @@ const HomeShipper = () => {
     fetchData(1, status);
   };
 
-  const handleMapDirection = (shipmentId: string, address: string) => {
-    // navigation.navigate('MapScreen', { shipmentId, address });
+  const handleMapDirection = (shipmentId: string, status: string) => {
+    const id = Number(shipmentId);
+    if (!isNaN(id)) {
+      navigation.navigate('DirectionScreen', {
+        shipmentId: id,
+        status: status,
+      });
+    }
   };
+
 
   const renderShipment = (shipment: Shipment) => {
     const color = statusColors[shipment.status as 'SUCCESS' | 'SHIPPING' | 'WAITING' | 'CANCELLED'] || '#ddd';
@@ -172,7 +179,7 @@ const HomeShipper = () => {
             mode="outlined"
             style={[styles.outlinedButton, { borderColor: color }]}
             textColor={color}
-            onPress={() => handleMapDirection(shipment.shipmentId, shipment.address)}
+            onPress={() => handleMapDirection(shipment.shipmentId, shipment.status)}
           >
             {t('route')}
           </Button>
@@ -185,10 +192,23 @@ const HomeShipper = () => {
   const currentStatusConfig = statusConfig.find(item => item.status === selectedStatus);
   return (
     <View>
-      <Header style={styles.headerContainer} />
+      <Header
+        style={{
+          paddingHorizontal: 14,
+          paddingTop: 10,
+          paddingBottom: 10,
+          marginBottom: 10,
+          backgroundColor: 'white',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          elevation: 5,
+        }}
+      />
       <ScrollView contentContainerStyle={[styles.container, { paddingBottom: 100 }]}>
-      <Notification message={notification.message} visible={notification.visible} onHide={() => setNotification({ ...notification, visible: false })} />
-      <NotificationPopup userId={Number(userId) ?? 0} />
+        <Notification message={notification.message} visible={notification.visible} onHide={() => setNotification({ ...notification, visible: false })} />
+        <NotificationPopup userId={Number(userId) ?? 0} />
         {/* Thanh icon */}
         <StatusBar
           selectedStatus={selectedStatus}
@@ -219,18 +239,75 @@ const HomeShipper = () => {
         {/* Simple Pagination */}
         {filteredData.length > 0 && !loading && !error && (
           <View style={styles.pagination}>
-            {[...Array(totalPage)].map((_, index) => (
-              <TouchableOpacity
-                key={index + 1}
-                style={[
-                  styles.pageButton,
-                  currentPage === index + 1 && styles.activePage
-                ]}
-                onPress={() => setCurrentPage(index + 1)}
-              >
-                <Text>{index + 1}</Text>
-              </TouchableOpacity>
-            ))}
+            {totalPage > 6 ? (
+              <>
+                {/* Nút đầu tiên */}
+                <TouchableOpacity
+                  style={[
+                    styles.pageButton,
+                    currentPage === 1 && styles.activePage
+                  ]}
+                  onPress={() => setCurrentPage(1)}
+                >
+                  <Text>1</Text>
+                </TouchableOpacity>
+
+                {/* Dấu ... nếu cần */}
+                {currentPage > 4 && <Text style={styles.dots}>...</Text>}
+
+                {/* Các trang quanh currentPage */}
+                {Array.from({ length: totalPage }, (_, i) => i + 1)
+                  .filter(page =>
+                    page !== 1 &&
+                    page !== totalPage &&
+                    (
+                      (currentPage <= 4 && page <= 5) || // đầu danh sách
+                      (currentPage >= totalPage - 3 && page >= totalPage - 4) || // cuối danh sách
+                      (page >= currentPage - 1 && page <= currentPage + 1) // giữa danh sách
+                    )
+                  )
+
+                  .map((page) => (
+                    <TouchableOpacity
+                      key={page}
+                      style={[
+                        styles.pageButton,
+                        currentPage === page && styles.activePage
+                      ]}
+                      onPress={() => setCurrentPage(page)}
+                    >
+                      <Text>{page}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                {/* Dấu ... nếu cần */}
+                {currentPage < totalPage - 3 && <Text style={styles.dots}>...</Text>}
+
+                {/* Nút cuối cùng */}
+                <TouchableOpacity
+                  style={[
+                    styles.pageButton,
+                    currentPage === totalPage && styles.activePage
+                  ]}
+                  onPress={() => setCurrentPage(totalPage)}
+                >
+                  <Text>{totalPage}</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              Array.from({ length: totalPage }, (_, i) => i + 1).map(page => (
+                <TouchableOpacity
+                  key={page}
+                  style={[
+                    styles.pageButton,
+                    currentPage === page && styles.activePage
+                  ]}
+                  onPress={() => setCurrentPage(page)}
+                >
+                  <Text>{page}</Text>
+                </TouchableOpacity>
+              ))
+            )}
           </View>
         )}
       </ScrollView>
@@ -322,11 +399,17 @@ const styles = StyleSheet.create({
   statusButton: { padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 20 },
   activeStatus: { backgroundColor: '#FFA983' },
   statusText: { fontWeight: 'bold' },
-  pagination: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
+  pagination: { flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom:20 },
   pageButton: { padding: 10, margin: 5, backgroundColor: '#eee', borderRadius: 10 },
   activePage: { backgroundColor: '#FFA983' },
   errorText: { color: 'red', textAlign: 'center', marginTop: 20 },
   emptyText: { textAlign: 'center', fontStyle: 'italic', marginTop: 20 },
+  dots: {
+    paddingHorizontal: 5,
+    fontSize: 18,
+    alignSelf: 'center',
+  },
+
 });
 
 export default HomeShipper;

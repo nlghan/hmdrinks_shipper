@@ -291,7 +291,7 @@ const ShipmentDetails = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <TouchableOpacity style={styles.backButton}  onPress={() => navigation.goBack()} >
                     <Icon name="arrow-back" size={20} color="#FF9800" />
                 </TouchableOpacity>
                 <Text style={styles.header}>{t('orderInfo1')}</Text>
@@ -387,11 +387,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     header: {
-        fontSize: 24,
-        fontFamily: FONTFAMILY.lobster_regular,
-        textAlign: 'center',
-        marginBottom: 8,
-        color: '#333',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center', // Căn giữa nội dung theo chiều ngang
+        
+        fontSize: 25,
+        fontFamily:FONTFAMILY.lobster_regular,
+        textAlign: 'center', // Căn giữa văn bản trong Text
     },
     card: {
         borderRadius: 12,
