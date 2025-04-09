@@ -8,8 +8,10 @@ import Other from '../screens/Other';
 import TabNavigator from './TabNavigator';
 import LanguageChange from '../screens/LanguagChange';
 import ShipmentDetails from '../screens/ShipmentDetails';
-import NotificationScreen from '../screens/Notification'; 
+import NotificationScreen from '../screens/Notification';
 import ChatWithUser from '../screens/ChatWithUser';
+import DirectionScreen from '../screens/DirectionScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 // ✅ Định nghĩa kiểu cho danh sách các màn hình
 export type RootStackParamList = {
@@ -18,10 +20,12 @@ export type RootStackParamList = {
   Info: undefined;
   Other: undefined;
   Main: undefined;
-  LanguageChange:  undefined;
+  LanguageChange: undefined;
   ShipmentDetails: { shipmentId: number };
   Notification: undefined;
   ChatWithUser: { shipmentId: number };
+  DirectionScreen: { shipmentId: number, status: string };
+  ForgotPassword: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,7 +35,7 @@ const StackNavigator = () => {
 
   return (
     <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false, animation:'slide_from_right' }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false, animation: 'slide_from_right' }} />
       {/* <Stack.Screen name="Register" component={Register} options={{ headerShown: false, animation:'slide_from_right' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false, animation:'slide_from_right' }} /> */}
       <Stack.Screen
@@ -42,13 +46,14 @@ const StackNavigator = () => {
           animation: 'slide_from_right'  // Thử đổi thành 'slide_from_right' hoặc 'fade'
         }}
       />
-      <Stack.Screen name="Info" component={Info} options={{ headerShown: false }} />    
+      <Stack.Screen name="Info" component={Info} options={{ headerShown: false }} />
       <Stack.Screen name="Other" component={Other} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="LanguageChange" component={LanguageChange} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
-      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, animation: 'slide_from_right' }}/>
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ChatWithUser" component={ChatWithUser} options={{ headerShown: false, animation: 'slide_from_right' }} />
-      
+      <Stack.Screen name="DirectionScreen" component={DirectionScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false, animation:'slide_from_right' }} />
     </Stack.Navigator>
   );
 };

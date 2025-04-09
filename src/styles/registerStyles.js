@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const registerStyles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F8F8FF', // Màu nền nhẹ nhàng
+        backgroundColor: '#F8F8FF',
         padding: 20,
     },
     languageContainer: {
@@ -15,63 +15,70 @@ const styles = StyleSheet.create({
         zIndex: 10, // Đảm bảo hiển thị trên các thành phần khác
         
     },
+    title: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#FF7F50', // Cam đậm cho tiêu đề nổi bật
+    },
+    input: {
+        width: '100%',
+        height: 45,
+        borderColor: '#FFA07A', // Viền cam nhạt
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+        backgroundColor: '#FFF5EE', // Màu nền cam rất nhạt
+        color: '#333',
+        fontSize: 16,
+    },
     animatedTitle: {
         fontSize: 50,
         fontWeight: 'bold',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 10,
-        marginBottom: 20,
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#FF8247', // Màu cam đậm
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    input: {
+    registerButton: {
         width: '100%',
         height: 50,
-        borderWidth: 1,
-        borderColor: '#FF7F50', // Viền cam nhạt
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        fontSize: 16,
-        marginBottom: 15,
-        backgroundColor: '#fff',
-        color: '#000',
-    },
-    loginButton: {
-        width: '100%',
-        height: 50,
-        backgroundColor: '#FF7F24', // Màu cam đậm
+        backgroundColor: '#FF7F24', // Nút cam đậm
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8,
-        marginTop: 10,
-    },
-    loginText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    successText: {
-        color: 'green',
-        fontSize: 16,
-        marginBottom: 10,
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 16,
-        marginBottom: 10,
+        borderRadius: 12,
+        shadowColor: '#FF6347',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // Hiệu ứng đổ bóng cho Android
     },
     registerText: {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontSize: 18,
+    },
+    successText: {
+        color: '#32CD32', // Màu xanh lá cây cho thông báo thành công
+        marginBottom: 10,
+        fontWeight: '600',
+    },
+    errorText: {
+        color: '#FF4500', // Màu cam đỏ cho thông báo lỗi
+        marginBottom: 10,
+        fontWeight: '600',
+    },
+    loginText: {
+        marginTop: 15,
+        fontSize: 16,
+        color: '#333',
+    },
+    loginText1: {
         marginTop: 15,
         fontSize: 15,
         color: '#333',
     },
-    registerLink: {
-        color: '#FF4500',
+    loginLink: {
+        color: '#FF6347', // Link màu cam đậm
         fontWeight: 'bold',
     },
     googleButton: {
@@ -128,8 +135,7 @@ const styles = StyleSheet.create({
         bottom: -180,
         right: -80,
     },
-    
-    
+
 });
 
-export default styles;
+export default registerStyles;

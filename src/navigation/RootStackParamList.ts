@@ -9,5 +9,8 @@ export type RootStackParamList = {
     ShipmentDetails: { shipmentId: number };
     Notification: { userId: number } | undefined;
     ChatWithUser: { shipmentId: number };
+    DirectionScreen: { shipmentId: number, status:string };
+    Register: undefined;
+    ForgotPassword: undefined;
   };
   

@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'; // Import hook useTranslation
 import { useShipperStore } from '../store/store';
 
 
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 const getUserIdFromToken = (token: string) => {
     try {
@@ -242,20 +243,17 @@ const Login: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={loginStyles.googleButton} onPress={handleLoginGG}>
+                <Image source={require('../assets/app_images/gg.png')} style={loginStyles.googleIcon}/>
                 <Text style={loginStyles.googleText}>{t('gg')}</Text>
             </TouchableOpacity>
 
             {/* Thêm phần đăng ký */}
-            {/* <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={loginStyles.registerText}>
-                    {t('noAcc')} <Text style={loginStyles.registerLink}>{t('signUp')}</Text>
-                </Text>
-            </TouchableOpacity>
+        
             <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                 <Text style={loginStyles.registerText}>
                     <Text style={loginStyles.registerLink}>{t('forget')}</Text>
                 </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             {/* Họa tiết động */}
             <Animated.View
                 style={[
