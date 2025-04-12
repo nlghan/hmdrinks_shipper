@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity, Image, TextInput, Button, Alert, ActivityIndicator } from "react-native";
 import axiosInstance from "../utils/axiosInstance";
-import { getCookie, getUserIdFromToken, formatBirthDayForInput } from "../utils/helpers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { launchImageLibrary } from 'react-native-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';

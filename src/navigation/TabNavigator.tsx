@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
-import Info from '../screens/Info';
+import Analytics from '../screens/Analytics';
 import Other from '../screens/Other';
 import { COLORS, FONTFAMILY } from '../theme/theme';
 import { BlurView } from '@react-native-community/blur';
@@ -46,13 +46,13 @@ const TabNavigator = () => {
 
 
       <Tab.Screen
-        name="Info"
-        component={Info}
+        name="Analytics"
+        component={Analytics}
         options={{
-          tabBarLabel: t('info'), // ✅ Dịch "Khác"
+          tabBarLabel: t('analytics'), // ✅ Dịch "Khác"
           tabBarIcon: ({ focused }) => (
             <Icon
-              name="person"
+              name="timelapse"
               size={24}
               color={focused ? COLORS.primaryGreenHex : COLORS.primaryGray}
             />

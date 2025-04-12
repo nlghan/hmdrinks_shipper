@@ -3,6 +3,7 @@ export type RootStackParamList = {
     Home: undefined;
     Login: undefined;
     Info: undefined;
+    Analytics: undefined;
     Other: undefined;
     Main: undefined;
     LanguageChange:  undefined;

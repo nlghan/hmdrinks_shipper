@@ -3,8 +3,9 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet, Alert
 } from 'react-native';
 import axiosInstance from '../utils/axiosInstance';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useCallback } from 'react';
 import { Button } from 'react-native-paper';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useShipperStore } from '../store/store';
@@ -122,6 +123,13 @@ const HomeShipper = () => {
     setFilteredData(data.filter((item) => item.status === selectedStatus));
   }, [data, selectedStatus]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) {
+        fetchData(1); // Load lại dữ liệu mỗi khi quay lại Home
+      }
+    }, [userId, selectedStatus])
+  );
   const handleStatusChange = (status: 'SUCCESS' | 'SHIPPING' | 'WAITING' | 'CANCELLED') => {
     setSelectedStatus(status);
     setCurrentPage(1);
@@ -208,7 +216,7 @@ const HomeShipper = () => {
       />
       <ScrollView contentContainerStyle={[styles.container, { paddingBottom: 100 }]}>
         <Notification message={notification.message} visible={notification.visible} onHide={() => setNotification({ ...notification, visible: false })} />
-        <NotificationPopup userId={Number(userId) ?? 0} />
+        {userId && <NotificationPopup userId={Number(userId.userId)} onPress={() => fetchData(1)}/>}
         {/* Thanh icon */}
         <StatusBar
           selectedStatus={selectedStatus}

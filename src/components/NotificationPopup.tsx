@@ -11,10 +11,11 @@ type NotificationWS = {
 };
 
 interface NotificationPopupProps {
-    userId: number; // Thêm kiểu rõ ràng
+    userId: number; // Thêm kiểu rõ ràng,
+    onPress: () => void; // Thêm hàm onPress
 }
 
-const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId }) => {
+const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId, onPress }) => {
     const socketNotifications = useWebSocket(userId);
     const [notifications, setNotifications] = useState<NotificationWS[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,6 +24,8 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId }) => {
     const lastNotificationTime = useRef<number | null>(null);
 
     useEffect(() => {
+        console.log("123mymymy123mymymy: ", userId)
+        console.log('🔔 socketNotificationsssssssssssss:', socketNotifications.length);
         if (socketNotifications.length === 0) return;
 
         const newNotification = socketNotifications[socketNotifications.length - 1];
@@ -42,7 +45,9 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId }) => {
                 isModalOpen.current = true;
             }
         }
-    }, [socketNotifications]);
+        console.log('🔔 socketNotifications:', socketNotifications);
+
+    }, [socketNotifications.length]);
 
     const closeModal = () => {
         setModalVisible(false);
@@ -72,7 +77,11 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId }) => {
                         />
                         <TouchableOpacity
                             style={styles.closeButton}
-                            onPress={() => setModalVisible(false)}
+                            onPress={() => {
+                                setModalVisible(false);
+                                isModalOpen.current = false;
+                                onPress()
+                            }}
                         >
                             <Text style={styles.closeButtonText}>Đóng</Text>
                         </TouchableOpacity>

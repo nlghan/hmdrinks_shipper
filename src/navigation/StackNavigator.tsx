@@ -12,12 +12,14 @@ import NotificationScreen from '../screens/Notification';
 import ChatWithUser from '../screens/ChatWithUser';
 import DirectionScreen from '../screens/DirectionScreen';
 import ForgotPassword from '../screens/ForgotPassword';
+import Analytics from '../screens/Analytics';
 
 // ✅ Định nghĩa kiểu cho danh sách các màn hình
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Info: undefined;
+  Analytics: undefined;
   Other: undefined;
   Main: undefined;
   LanguageChange: undefined;
@@ -47,6 +49,7 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen name="Info" component={Info} options={{ headerShown: false }} />
+
       <Stack.Screen name="Other" component={Other} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="LanguageChange" component={LanguageChange} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
@@ -54,6 +57,7 @@ const StackNavigator = () => {
       <Stack.Screen name="ChatWithUser" component={ChatWithUser} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="DirectionScreen" component={DirectionScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false, animation:'slide_from_right' }} />
+      <Stack.Screen name="Analytics" component={Analytics} options={{ headerShown: false, animation:'slide_from_right' }} />
     </Stack.Navigator>
   );
 };
