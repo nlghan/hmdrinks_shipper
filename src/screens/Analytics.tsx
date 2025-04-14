@@ -147,15 +147,38 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
     }
   };
 
-  const chartWidth = Dimensions.get('window').width - 32;
+  const chartWidth = Dimensions.get('window').width - 16;
+
+  // Lấy max và min của đơn hàng và doanh thu
   const maxOrders = Math.max(...combinedData.map(item => item.orders));
   const maxRevenue = Math.max(...combinedData.map(item => item.revenue));
-  const normalizedRevenue = combinedData.map(item => ({
+  const minRevenue = Math.min(...combinedData.map(item => item.revenue));  // Tính toán minValue từ dữ liệu
+  
+  // Tính toán bước tự động cho trục Y
+  const noOfSections = 5;  // Số sections trên trục Y
+  const range = maxRevenue - minRevenue;  // Phạm vi giữa giá trị lớn nhất và nhỏ nhất
+  let stepValue = Math.ceil(range / noOfSections);
+  
+  // Đảm bảo stepValue là bội số của 50,000 và không mất số 0
+  if (stepValue % 50000 !== 0) {
+    stepValue = Math.ceil(stepValue / 50000) * 50000;  // Làm tròn stepValue về bội số của 50,000
+  }
+  
+  // Đảm bảo stepValue không quá nhỏ so với dữ liệu, có thể thay đổi tùy theo yêu cầu
+  if (stepValue < 50000) {
+    stepValue = 50000;  // Đảm bảo rằng stepValue không nhỏ hơn 50,000
+  }
+  
+  const adjustedMaxValue = Math.ceil(maxRevenue / stepValue) * stepValue + stepValue;
+
+  
+  console.log(stepValue);  // In ra giá trị của stepValue để kiểm tra
+  
+  // Tính toán ordersScaled cho từng item trong dữ liệu
+  const combinedChartData = combinedData.map(item => ({
     ...item,
-    revenueScaled: item.revenue / 60000 // chia theo max để về cùng thang
+    ordersScaled: maxOrders > 0 ? (item.orders / maxOrders) * maxRevenue : 0,  // Scale orders để match với revenue
   }));
-  const maxCombined = Math.max(maxOrders, ...normalizedRevenue.map(i => i.revenueScaled));
-  const roundedMax = Math.ceil(maxCombined);
 
   return (
     <View>
@@ -196,51 +219,80 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
             Tháng này không có đơn hàng thành công
           </Text>
         ) : (
-          <>
-
-            <BarChart
-              barWidth={20}
-              spacing={8}
-              height={250}
-              width={chartWidth}
-              yAxisThickness={1}
-              xAxisLabelTextStyle={{ color: '#666', fontSize: 10 }}
-              noOfSections={roundedMax}  // 👈 Số đoạn chia trục Y
-              maxValue={roundedMax}      // 👈 Đảm bảo các giá trị không vượt quá trục
-              stepValue={1}              // 👈 Hiển thị trục Y theo bước 1: 0,1,2,...
-              data={combinedData.map(item => ({
-                value: item.orders,
+          <View style={{ padding: 20 }}>
+            <View style={{ position: 'relative' }}>
+              {/* Biểu đồ cột & đường */}
+              <BarChart
+              data={combinedChartData.map(item => ({
+                value: item.revenue, // 🟩 Cột là doanh thu
                 label: item.label,
+                frontColor: '#4CAF50',
+                topLabelComponent: () =>
+                  item.orders > 0 ? (
+                   < View style={{ width: 60, alignItems: 'center', position: 'absolute', bottom: 5 }}>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          color: '#333',
+                          textAlign: 'center',
+                          flexWrap: 'wrap',
+                          marginBottom: 11,
+                        }}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                      >
+                        {item.orders.toLocaleString()} đơn
+                      </Text>
+                    </View>
+                  ) : null,
+                lineData: {
+                  value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
+                },
               }))}
-              lineData={normalizedRevenue.map(item => ({
-                value: item.revenueScaled,
-              }))}
-              frontColor="#4CAF50"
+              barWidth={30}
+              initialSpacing={8}
+              spacing={15}
+              barBorderRadius={6}
+              showGradient
+              yAxisThickness={1}
+              xAxisType="dashed"
+              xAxisColor="lightgray"
+              yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft:-20 }}
+              xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
+              maxValue={adjustedMaxValue}
+              stepValue={stepValue}
+              noOfSections={noOfSections}
+              labelWidth={20}
+              showLine
               lineConfig={{
-                color: "#f44336",
+                color: '#f44336',
                 thickness: 2,
                 curved: true,
                 hideDataPoints: false,
                 dataPointsColor: '#f44336',
+                shiftY: 9,
+                initialSpacing: 8,
                 isAnimated: true,
-                animationDuration: 1000,
               }}
-              yAxisTextStyle={{ color: '#444' }}
-              yAxisLabelSuffix=" ĐH"
+              yAxisLabelSuffix="₫"
             />
+
+            </View>
+
+            {/* Chú thích biểu đồ */}
             <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
                 <View style={{ width: 12, height: 12, backgroundColor: '#4CAF50', marginRight: 4 }} />
-                <Text>Đơn hàng thành công</Text>
+                <Text style={{ fontSize: 13 }}>Doanh thu (VNĐ)</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ width: 12, height: 12, backgroundColor: '#f44336', marginRight: 4 }} />
-                <Text>Doanh thu (VNĐ)</Text>
+                <Text style={{ fontSize: 13 }}>Số đơn thành công</Text>
               </View>
             </View>
-
-          </>
+          </View>
         )}
+
 
         <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 20 }}>Phần trăm trạng thái đơn hàng</Text>
 
