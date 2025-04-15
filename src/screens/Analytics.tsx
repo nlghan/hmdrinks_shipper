@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Dimensions, Button, TouchableOpacity } from 'react-native';
 import axiosInstance from "../utils/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
@@ -11,6 +11,7 @@ import { COLORS, FONTFAMILY } from "../theme/theme";
 import { Picker } from '@react-native-picker/picker';
 import SelectBox from '../components/SelectBox';
 import LinearGradient from 'react-native-linear-gradient';
+import MonthYearPicker from '../components/MonthYearPicker';
 
 
 type Month = '01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | '10' | '11' | '12';
@@ -41,8 +42,15 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
   const [percentages, setPercentages] = useState<number[]>([]);
   const { userId } = useShipperStore();
   const [combinedData, setCombinedData] = useState<{ label: string; orders: number; revenue: number }[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<Month>('12');
-  const [selectedYear, setSelectedYear] = useState<number>(2024);
+  const [selectedMonth, setSelectedMonth] = useState<Month>('04');
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBarInfo, setSelectedBarInfo] = useState<{
+    date: string;
+    orders: number;
+    revenue: number;
+  } | null>(null);
+
 
   const statusList = [
     { label: 'Chờ xử lý', colors: ['#FFA726', '#FB8C00'], percent: percentages[0] },
@@ -191,7 +199,11 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
     ordersScaled: maxOrders > 0 ? (item.orders / maxOrders) * maxRevenue : 0,  // Scale orders để match với revenue
   }));
 
-
+  const handleApply = (month: number, year: number) => {
+    setSelectedMonth(month.toString().padStart(2, '0') as Month);
+    setSelectedYear(year);
+    setShowModal(false);
+  };
 
 
   return (
@@ -212,33 +224,96 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
       />
       <ScrollView style={{ padding: 16, backgroundColor: '#fff' }} contentContainerStyle={{ paddingBottom: 135 }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Biểu đồ đơn hàng thành công & doanh thu</Text>
-        <View style={{ flexDirection: 'row', marginBottom: 12 }}>
-          <SelectBox
-            label="Chọn tháng"
-            value={`Tháng ${selectedMonth}`}
-            options={Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'))}
-            onSelect={(value) => setSelectedMonth(value as Month)}
+        <View style={{ flex: 1, paddingBottom: 5}}>
+          {/* Button chọn tháng năm */}
+          <TouchableOpacity
+            onPress={() => setShowModal(true)}
+            style={{
+              backgroundColor: '#f3faf2',
+              paddingVertical: 10,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: '#ddd',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 3,
+              elevation: 2,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: '600', color: '#333' }}>
+            📅 Tháng {selectedMonth} - Năm {selectedYear}
+            </Text>
+          </TouchableOpacity>
 
-          />
-          <View style={{ width: 8 }} />
-          <SelectBox
-            label="Chọn năm"
-            value={`Năm ${selectedYear}`}
-            options={Array.from({ length: 6 }, (_, i) => (2023 + i).toString())}
-            onSelect={(value) => setSelectedYear(parseInt(value))}
+          {/* Modal chọn tháng năm */}
+          <MonthYearPicker
+            visible={showModal}
+            onClose={() => setShowModal(false)}
+            onApply={handleApply}
           />
         </View>
+
+
+{selectedBarInfo && (
+  <View
+    style={{
+      marginBottom: 12,
+      backgroundColor: '#f1f8e9',
+      padding: 16,
+      borderRadius: 12,
+      borderColor: '#dcedc8',
+      borderWidth: 1,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+      elevation: 2,
+    }}
+  >
+    <Text style={{ fontSize: 14, fontWeight: '600', color: '#33691E', marginBottom: 8 }}>
+      Ngày: {selectedBarInfo.date}
+    </Text>
+
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: '#558B2F', marginBottom: 4 }}>
+          📦 Số đơn
+        </Text>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#2E7D32' }}>
+          {selectedBarInfo.orders} đơn
+        </Text>
+      </View>
+
+      <View style={{ alignItems: 'flex-end' }}>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: '#33691E', marginBottom: 4 }}>
+          💰 Doanh thu
+        </Text>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#1B5E20' }}>
+          {selectedBarInfo.revenue.toLocaleString()}₫
+        </Text>
+      </View>
+    </View>
+  </View>
+)}
+
+
+
+
         {combinedData.length === 0 || combinedData.every(item => item.orders === 0) ? (
           <Text style={{ textAlign: 'center', marginTop: 24, fontSize: 16, color: '#888' }}>
             Tháng này không có đơn hàng thành công
           </Text>
         ) : (
-          <View style={{ padding: 20 }}>
+          <View style={{ padding: 12 }}>
             <View style={{ position: 'relative' }}>
               {/* Biểu đồ cột & đường */}
               <BarChart
                 data={combinedChartData.map(item => ({
-                  value: item.revenue, // 🟩 Cột là doanh thu
+                  value: item.revenue / 1000, // 🟩 Cột là doanh thu
                   label: item.label,
                   frontColor: '#4CAF50',
                   topLabelComponent: () =>
@@ -255,12 +330,20 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
                           numberOfLines={2}
                           ellipsizeMode="tail"
                         >
-                          {item.orders.toLocaleString()} đơn
+                          {item.orders.toLocaleString()}
                         </Text>
                       </View>
                     ) : null,
                   lineData: {
                     value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
+                  },
+                  onPress: () => {
+                    const selectedDate = `${item.label}/${selectedMonth}/${selectedYear}`;
+                    setSelectedBarInfo({
+                      date: selectedDate,
+                      orders: item.orders,
+                      revenue: item.revenue,
+                    });
                   },
                 }))}
                 barWidth={30}
@@ -273,8 +356,8 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
                 xAxisColor="lightgray"
                 yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft: -20 }}
                 xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
-                maxValue={adjustedMaxValue}
-                stepValue={stepValue}
+                maxValue={adjustedMaxValue / 1000}
+                stepValue={stepValue / 1000}
                 noOfSections={noOfSections}
                 labelWidth={20}
                 showLine
@@ -288,7 +371,7 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
                   initialSpacing: 8,
                   isAnimated: true,
                 }}
-                yAxisLabelSuffix="₫"
+                yAxisLabelSuffix="K"
               />
 
             </View>
