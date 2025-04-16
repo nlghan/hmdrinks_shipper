@@ -324,7 +324,7 @@ const HomeShipper = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#fff', flexGrow: 1 },
+  container: { padding: 16, backgroundColor: '#f5f5f5f5', flexGrow: 1 },
   headerContainer: {
     paddingHorizontal: 5,
     paddingTop: 10,
