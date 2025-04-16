@@ -222,7 +222,7 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
           elevation: 5,
         }}
       />
-      <ScrollView style={{ padding: 16, backgroundColor: '#fff' }} contentContainerStyle={{ paddingBottom: 135 }}>
+      <ScrollView style={{ padding: 16, backgroundColor: '#f5f5f5f5' }} contentContainerStyle={{ paddingBottom: 135 }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Biểu đồ đơn hàng thành công & doanh thu</Text>
         <View style={{ flex: 1, paddingBottom: 5}}>
           {/* Button chọn tháng năm */}

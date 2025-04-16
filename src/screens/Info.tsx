@@ -763,7 +763,7 @@ const Info: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#FFF5E1",
+    backgroundColor: "white",
     paddingBottom: 70,
   },
   editIcon: {
