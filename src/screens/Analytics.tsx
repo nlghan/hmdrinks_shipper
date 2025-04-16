@@ -202,8 +202,10 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
   const handleApply = (month: number, year: number) => {
     setSelectedMonth(month.toString().padStart(2, '0') as Month);
     setSelectedYear(year);
+    setSelectedBarInfo(null);  // Đặt lại selectedBarInfo về null
     setShowModal(false);
   };
+
 
 
   return (
@@ -222,217 +224,259 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
           elevation: 5,
         }}
       />
-      <ScrollView style={{ padding: 16, backgroundColor: '#f5f5f5f5' }} contentContainerStyle={{ paddingBottom: 135 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Biểu đồ đơn hàng thành công & doanh thu</Text>
-        <View style={{ flex: 1, paddingBottom: 5}}>
-          {/* Button chọn tháng năm */}
-          <TouchableOpacity
-            onPress={() => setShowModal(true)}
-            style={{
-              backgroundColor: '#f3faf2',
-              paddingVertical: 10,
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: '#ddd',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 3,
-              elevation: 2,
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#333' }}>
-            📅 Tháng {selectedMonth} - Năm {selectedYear}
-            </Text>
-          </TouchableOpacity>
+      <ScrollView style={{ padding: 8, backgroundColor: '#f5f5f5f5' }} contentContainerStyle={{ paddingBottom: 135 }}>
+        <View style={{ padding: 8, backgroundColor: 'white', borderRadius: 8, }} >
+          <Text style={{ fontSize: 26, fontWeight: '600', color: 'black', marginBottom: 8, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>Biểu đồ doanh thu</Text>
+          <View style={{ flex: 1, paddingBottom: 5 }}>
+            {/* Button chọn tháng năm */}
+            <TouchableOpacity
+              onPress={() => setShowModal(true)}
+              style={{
+                backgroundColor: '#fff4ef',
+                paddingVertical: 10,
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: '#fc9260', // Border xanh lá cây sáng
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 3,
+                elevation: 2,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '600', color: '#333', fontFamily: FONTFAMILY.lobster_regular }}>
+                {selectedBarInfo
+                  ? `📅 Ngày: ${selectedBarInfo.date}`
+                  : `📅 Tháng ${selectedMonth} - Năm ${selectedYear}`}
+              </Text>
+            </TouchableOpacity>
 
-          {/* Modal chọn tháng năm */}
-          <MonthYearPicker
-            visible={showModal}
-            onClose={() => setShowModal(false)}
-            onApply={handleApply}
-          />
+            {/* Modal chọn tháng năm */}
+            <MonthYearPicker
+              visible={showModal}
+              onClose={() => setShowModal(false)}
+              onApply={handleApply}
+            />
+          </View>
+
+
+          {selectedBarInfo && (
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 12,
+                marginBottom: 12,
+              }}
+            >
+              {/* Ô 1: Ngày + Số đơn */}
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: 'white', // Màu nền nhẹ, dễ nhìn
+                  padding: 16,
+                  borderRadius: 12,
+                  borderColor: '#fc9260', // Border xanh lá cây sáng
+                  borderWidth: 1.5, // Độ rộng của border tăng lên
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 6,
+                  elevation: 3, // Tăng độ cao của shadow
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 18, color: '#388E3C', marginBottom: 4, fontFamily: FONTFAMILY.lobster_regular }}>
+                  📦 Số đơn hàng
+                </Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>
+                  {selectedBarInfo.orders} đơn
+                </Text>
+              </View>
+
+              {/* Ô 2: Doanh thu */}
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: 'white',
+                  padding: 16,
+                  borderRadius: 12,
+                  borderColor: '#fc9260',
+                  borderWidth: 1.5,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 6,
+                  elevation: 3,
+                  alignItems: 'center', // Center theo chiều ngang
+                  justifyContent: 'center', // Center theo chiều dọc
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: '#388E3C',
+                    marginBottom: 4,
+                    fontFamily: FONTFAMILY.lobster_regular
+                  }}
+                >
+                  💰 Doanh thu
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: 'black',
+                  }}
+                >
+                  {selectedBarInfo.revenue.toLocaleString()}₫
+                </Text>
+              </View>
+
+            </View>
+          )}
+
+
+          {combinedData.length === 0 || combinedData.every(item => item.orders === 0) ? (
+            <Text style={{ textAlign: 'center', marginTop: 24, fontSize: 16, color: '#888' }}>
+              Tháng này không có đơn hàng thành công
+            </Text>
+          ) : (
+            <View style={{ padding: 12 }}>
+              <View style={{ position: 'relative' }}>
+                {/* Biểu đồ cột & đường */}
+                <BarChart
+                  data={combinedChartData.map(item => ({
+                    value: item.revenue / 1000, // 🟩 Cột là doanh thu
+                    label: item.label,
+                    frontColor: '#4CAF50',
+                    topLabelComponent: () =>
+                      item.orders > 0 ? (
+                        < View style={{ width: 60, alignItems: 'center', position: 'absolute', bottom: 5 }}>
+                          <Text
+                            style={{
+                              fontSize: 9,
+                              color: '#333',
+                              textAlign: 'center',
+                              flexWrap: 'wrap',
+                              marginBottom: 11,
+                            }}
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                          >
+                            {item.orders.toLocaleString()}
+                          </Text>
+                        </View>
+                      ) : null,
+                    lineData: {
+                      value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
+                    },
+                    onPress: () => {
+                      const selectedDate = `${item.label}/${selectedMonth}/${selectedYear}`;
+                      setSelectedBarInfo({
+                        date: selectedDate,
+                        orders: item.orders,
+                        revenue: item.revenue,
+                      });
+                    },
+                  }))}
+                  barWidth={30}
+                  initialSpacing={8}
+                  spacing={15}
+                  barBorderRadius={6}
+                  showGradient
+                  yAxisThickness={1}
+                  xAxisType="dashed"
+                  xAxisColor="lightgray"
+                  yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft: -20 }}
+                  xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
+                  maxValue={adjustedMaxValue / 1000}
+                  stepValue={stepValue / 1000}
+                  noOfSections={noOfSections}
+                  labelWidth={20}
+                  showLine
+                  lineConfig={{
+                    color: '#f44336',
+                    thickness: 2,
+                    curved: true,
+                    hideDataPoints: false,
+                    dataPointsColor: '#f44336',
+                    shiftY: 9,
+                    initialSpacing: 8,
+                    isAnimated: true,
+                  }}
+                  yAxisLabelSuffix="K"
+                />
+
+              </View>
+
+              {/* Chú thích biểu đồ */}
+              <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
+                  <View style={{ width: 12, height: 12, backgroundColor: '#4CAF50', marginRight: 4 }} />
+                  <Text style={{ fontSize: 13 }}>Doanh thu (VNĐ)</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{ width: 12, height: 12, backgroundColor: '#f44336', marginRight: 4 }} />
+                  <Text style={{ fontSize: 13 }}>Số đơn thành công</Text>
+                </View>
+              </View>
+            </View>
+          )}
+
         </View>
 
 
-{selectedBarInfo && (
-  <View
-    style={{
-      marginBottom: 12,
-      backgroundColor: '#f1f8e9',
-      padding: 16,
-      borderRadius: 12,
-      borderColor: '#dcedc8',
-      borderWidth: 1,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 3,
-      elevation: 2,
-    }}
-  >
-    <Text style={{ fontSize: 14, fontWeight: '600', color: '#33691E', marginBottom: 8 }}>
-      Ngày: {selectedBarInfo.date}
-    </Text>
+        <View style={{ padding: 8, backgroundColor: 'white', borderRadius: 8, marginTop: 20 }} >
+          <Text style={{ fontSize: 26, fontWeight: '600', color: 'black', marginTop: 20, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>Phần trăm trạng thái đơn hàng</Text>
 
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-      <View>
-        <Text style={{ fontSize: 13, fontWeight: '600', color: '#558B2F', marginBottom: 4 }}>
-          📦 Số đơn
-        </Text>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#2E7D32' }}>
-          {selectedBarInfo.orders} đơn
-        </Text>
-      </View>
+          <View style={{ flexDirection: 'row', paddingHorizontal: 13, paddingVertical: 16 }}>
+            {/* Legend */}
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              {statusList.map((item, index) => (
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                  <LinearGradient
+                    colors={item.colors}
+                    style={{ width: 16, height: 16, borderRadius: 4, marginRight: 10 }}
+                  />
+                  <Text style={{ fontSize: 14, color: '#333' }}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
 
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={{ fontSize: 13, fontWeight: '600', color: '#33691E', marginBottom: 4 }}>
-          💰 Doanh thu
-        </Text>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#1B5E20' }}>
-          {selectedBarInfo.revenue.toLocaleString()}₫
-        </Text>
-      </View>
-    </View>
-  </View>
-)}
-
-
-
-
-        {combinedData.length === 0 || combinedData.every(item => item.orders === 0) ? (
-          <Text style={{ textAlign: 'center', marginTop: 24, fontSize: 16, color: '#888' }}>
-            Tháng này không có đơn hàng thành công
-          </Text>
-        ) : (
-          <View style={{ padding: 12 }}>
-            <View style={{ position: 'relative' }}>
-              {/* Biểu đồ cột & đường */}
-              <BarChart
-                data={combinedChartData.map(item => ({
-                  value: item.revenue / 1000, // 🟩 Cột là doanh thu
-                  label: item.label,
-                  frontColor: '#4CAF50',
-                  topLabelComponent: () =>
-                    item.orders > 0 ? (
-                      < View style={{ width: 60, alignItems: 'center', position: 'absolute', bottom: 5 }}>
-                        <Text
-                          style={{
-                            fontSize: 9,
-                            color: '#333',
-                            textAlign: 'center',
-                            flexWrap: 'wrap',
-                            marginBottom: 11,
-                          }}
-                          numberOfLines={2}
-                          ellipsizeMode="tail"
-                        >
-                          {item.orders.toLocaleString()}
-                        </Text>
-                      </View>
-                    ) : null,
-                  lineData: {
-                    value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
-                  },
-                  onPress: () => {
-                    const selectedDate = `${item.label}/${selectedMonth}/${selectedYear}`;
-                    setSelectedBarInfo({
-                      date: selectedDate,
-                      orders: item.orders,
-                      revenue: item.revenue,
-                    });
-                  },
-                }))}
-                barWidth={30}
-                initialSpacing={8}
-                spacing={15}
-                barBorderRadius={6}
-                showGradient
-                yAxisThickness={1}
-                xAxisType="dashed"
-                xAxisColor="lightgray"
-                yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft: -20 }}
-                xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
-                maxValue={adjustedMaxValue / 1000}
-                stepValue={stepValue / 1000}
-                noOfSections={noOfSections}
-                labelWidth={20}
-                showLine
-                lineConfig={{
-                  color: '#f44336',
-                  thickness: 2,
-                  curved: true,
-                  hideDataPoints: false,
-                  dataPointsColor: '#f44336',
-                  shiftY: 9,
-                  initialSpacing: 8,
-                  isAnimated: true,
-                }}
-                yAxisLabelSuffix="K"
+            {/* Pie Chart */}
+            <View style={{ padding: 10, alignItems: 'center' }}>
+              <PieChart
+                data={statusList
+                  .map(item => ({
+                    value: item.percent,
+                    color: item.colors[0], // lấy màu đầu tiên làm đại diện
+                    text: `${item.percent?.toFixed(1)}%`,
+                  }))
+                  .filter(item => item.value > 0)}
+                donut
+                focusOnPress
+                radius={85}
+                innerRadius={10}
+                showText
+                showValuesAsLabels
+                labelsPosition="mid"
+                textColor="#000"
+                textSize={12}
+                strokeWidth={3}
+                strokeColor="#fff"
+                centerLabelComponent={() => (
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#333' }}></Text>
+                )}
               />
-
-            </View>
-
-            {/* Chú thích biểu đồ */}
-            <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
-                <View style={{ width: 12, height: 12, backgroundColor: '#4CAF50', marginRight: 4 }} />
-                <Text style={{ fontSize: 13 }}>Doanh thu (VNĐ)</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ width: 12, height: 12, backgroundColor: '#f44336', marginRight: 4 }} />
-                <Text style={{ fontSize: 13 }}>Số đơn thành công</Text>
-              </View>
             </View>
           </View>
-        )}
 
 
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 20 }}>Phần trăm trạng thái đơn hàng</Text>
-
-        <View style={{ flexDirection: 'row', paddingHorizontal: 13, paddingVertical: 16 }}>
-          {/* Legend */}
-          <View style={{ flex: 1, justifyContent: 'center' }}>
-            {statusList.map((item, index) => (
-              <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                <LinearGradient
-                  colors={item.colors}
-                  style={{ width: 16, height: 16, borderRadius: 4, marginRight: 10 }}
-                />
-                <Text style={{ fontSize: 14, color: '#333' }}>{item.label}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Pie Chart */}
-          <View style={{ padding: 10, alignItems: 'center' }}>
-            <PieChart
-              data={statusList
-                .map(item => ({
-                  value: item.percent,
-                  color: item.colors[0], // lấy màu đầu tiên làm đại diện
-                  text: `${item.percent?.toFixed(1)}%`,
-                }))
-                .filter(item => item.value > 0)}
-              donut
-              focusOnPress
-              radius={85}
-              innerRadius={10}
-              showText
-              showValuesAsLabels
-              labelsPosition="mid"
-              textColor="#000"
-              textSize={12}
-              strokeWidth={3}
-              strokeColor="#fff"
-              centerLabelComponent={() => (
-                <Text style={{ fontSize: 14, fontWeight: '600', color: '#333' }}></Text>
-              )}
-            />
-          </View>
         </View>
 
       </ScrollView>
