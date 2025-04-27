@@ -26,6 +26,9 @@
     "payment": "Payment",
     "print_invoice": "Print Invoice"
   },
+  "leave": {
+    "title": "LEAVE SCHEDULE"
+},
   "login": "Login",
   "signUp": "Sign Up",
   "favourite": {

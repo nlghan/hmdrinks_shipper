@@ -2,6 +2,7 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "lib": ["dom", "esnext"],
-    "types": ["react-native-reanimated"]
+    "types": ["react-native-reanimated"],
+    "skipLibCheck": true
   }
 }

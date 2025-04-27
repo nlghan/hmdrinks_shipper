@@ -13,5 +13,6 @@ export type RootStackParamList = {
     DirectionScreen: { shipmentId: number, status:string };
     Register: undefined;
     ForgotPassword: undefined;
+    AbsenceRequest: undefined;
   };
   

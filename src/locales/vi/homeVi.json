@@ -30,6 +30,9 @@
         "payment_method": "Phương thức thanh toán",
         "refunded_status": "Trạng thái hoàn tiền"
     },
+    "leave": {
+        "title": "LỊCH NGHỈ"
+    },
     "favourite": {
         "title": "Yêu thích",
         "list": "Danh sách yêu thích"
