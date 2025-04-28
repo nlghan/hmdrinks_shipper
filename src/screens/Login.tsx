@@ -36,6 +36,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const {checkShipmentTime} = useShipperStore();
     const setUserId = useShipperStore((state) => state.setUserId);  // Lấy setUserId từ Zustand
 
     const handleLogin = async () => {
@@ -66,7 +67,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
 
                 setSuccessMessage('Đăng nhập thành công!');
                 setLoading(false); // 🔥 Đặt loading về false ngay trước khi điều hướng
-
+                checkShipmentTime();
 
                 if (role.includes('SHIPPER')) {
                     setLoading(false);

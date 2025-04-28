@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   componentCircle: {
     flex: 1,
     borderRadius: 30,
-    backgroundColor: 'white',
+    backgroundColor: '#ffece0',
   },
   iconContainer: {
     position: 'absolute',
