@@ -11,13 +11,16 @@ import Notification from '../components/Notification';
 import NotificationPopup from '../components/NotificationPopup';
 import { useNotification } from '../components/NotificationContext';
 import { FONTFAMILY } from "../theme/theme";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Other = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   const logout = useShipperStore((state) => state.logout);
   const { language, userId } = useShipperStore();
-  
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
   const { showNotificationModal } = useNotification();
   const [notification, setNotification] = useState({ message: '', visible: false });
   const handleLogout = () => {
@@ -42,11 +45,21 @@ const Other = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('features.support')}</Text>
           <View style={styles.list}>
-            <TouchableOpacity style={styles.listItem} onPress={() => showNotificationModal('Test thông báo Modal')}>
+            <TouchableOpacity style={styles.listItem} onPress={() => setShowConfirmModal(true)}>
               <MaterialIcons name="star" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('about.stat4')}</Text>
               <MaterialIcons name="arrow-forward-ios" style={styles.iconrow} size={18} />
             </TouchableOpacity>
+            <ConfirmModal
+              visible={showConfirmModal}
+              message="Bạn xác nhận muốn quay lại?"
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                navigation.goBack(); // hoặc hành động bạn muốn thực hiện
+              }}
+            />
+
             <TouchableOpacity style={styles.listItem} >
               <MaterialIcons name="comment" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('contact1')}</Text>
@@ -87,10 +100,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
   },
-  title:{
-    textAlign:'center',
-    fontFamily:FONTFAMILY.lobster_regular,
-    fontSize:24
+  title: {
+    textAlign: 'center',
+    fontFamily: FONTFAMILY.lobster_regular,
+    fontSize: 24
   },
   row: {
     flexDirection: "row",
@@ -148,7 +161,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily:FONTFAMILY.lobster_regular,
+    fontFamily: FONTFAMILY.lobster_regular,
     marginBottom: 10,
   },
   grid: {
@@ -212,18 +225,18 @@ const styles = StyleSheet.create({
     color: "orange",
     marginRight: 10,
   },
-  textOther:{
-    fontFamily:FONTFAMILY.dongle_light,
-    fontSize:24
+  textOther: {
+    fontFamily: FONTFAMILY.dongle_light,
+    fontSize: 24
   },
-  textOther1:{
-    fontFamily:FONTFAMILY.dongle_light,
-    fontSize:24,
-    color:'red'
+  textOther1: {
+    fontFamily: FONTFAMILY.dongle_light,
+    fontSize: 24,
+    color: 'red'
   },
-  textSubOther:{
-    fontFamily:FONTFAMILY.dongle_regular,
-    fontSize:14,
+  textSubOther: {
+    fontFamily: FONTFAMILY.dongle_regular,
+    fontSize: 14,
     color: "#333",
   }
 });

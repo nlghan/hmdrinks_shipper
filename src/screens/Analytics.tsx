@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Dimensions, Button, TouchableOpacity } from 're
 import axiosInstance from "../utils/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
+import Svg, { Line } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { useShipperStore } from "../store/store";
 import Header from "../components/Header";
@@ -35,6 +36,8 @@ const monthData: Record<'vi', MonthData> = {
   }
 };
 
+const radius = 85;
+const innerRadius = 40;
 
 const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
   const [successfulShipments, setSuccessfulShipments] = useState<number[]>([]);
@@ -53,11 +56,46 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
 
 
   const statusList = [
-    { label: 'Chờ xử lý', colors: ['#FFA726', '#FB8C00'], percent: percentages[0] },
-    { label: 'Đang giao', colors: ['#42A5F5', '#1E88E5'], percent: percentages[1] },
-    { label: 'Thành công', colors: ['#66BB6A', '#388E3C'], percent: percentages[2] },
-    { label: 'Hủy', colors: ['#EF5350', '#C62828'], percent: percentages[3] },
+    { label: 'Chờ xử lý', colors: ['#FFE0B2', '#FFCC80'], percent: percentages[0], icon: '⏳' },
+    { label: 'Đang giao', colors: ['#B3E5FC', '#81D4FA'], percent: percentages[1], icon: '🚚' },
+    { label: 'Thành công', colors: ['#C8E6C9', '#A5D6A7'], percent: percentages[2], icon: '✅' },
+    { label: 'Hủy', colors: ['#FFCDD2', '#EF9A9A'], percent: percentages[3], icon: '❌' },
   ];
+
+  const total = statusList.reduce((sum, item) => sum + item.percent, 0);
+  const centerX = radius + 10;
+  const centerY = radius + 10;
+
+  let angleOffset = 0;
+
+  const chartData = statusList.map((item) => {
+    const value = item.percent;
+    const angle = (value / total) * 360;
+    const midAngle = angleOffset + angle / 2;
+    const rad = (midAngle * Math.PI) / 180;
+    const labelX = centerX + (radius + 16) * Math.cos(rad);
+    const labelY = centerY + (radius + 16) * Math.sin(rad);
+    const lineX = centerX + radius * Math.cos(rad);
+    const lineY = centerY + radius * Math.sin(rad);
+
+    const result = {
+      value, // ✅ Thêm dòng này để đúng với kiểu pieDataItem
+      color: item.colors[1],
+      midAngle,
+      labelX,
+      labelY,
+      lineX,
+      lineY,
+      text: `${item.percent?.toFixed(1)}%`,
+      label: item.label,
+      colors: item.colors,
+      percent: item.percent,
+      icon: item.icon,
+    };
+
+    angleOffset += angle;
+    return result;
+  });
 
 
   useEffect(() => {
@@ -205,8 +243,6 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
     setSelectedBarInfo(null);  // Đặt lại selectedBarInfo về null
     setShowModal(false);
   };
-
-
 
   return (
     <View>
@@ -431,11 +467,22 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
         </View>
 
 
-        <View style={{ padding: 8, backgroundColor: 'white', borderRadius: 8, marginTop: 20 }} >
+        <View style={{
+          padding: 5,
+          backgroundColor: '#fff',
+          borderRadius: 16,
+          marginTop: 20,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0,
+          shadowRadius: 2,
+          elevation: 1,
+        }}>
+
           <Text style={{ fontSize: 26, fontWeight: '600', color: 'black', marginTop: 20, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>Phần trăm trạng thái đơn hàng</Text>
 
-          <View style={{ flexDirection: 'row', paddingHorizontal: 13, paddingVertical: 16 }}>
-            {/* Legend */}
+          <View style={{ flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 12 }}>
+
             <View style={{ flex: 1, justifyContent: 'center' }}>
               {statusList.map((item, index) => (
                 <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
@@ -448,31 +495,32 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
               ))}
             </View>
 
-            {/* Pie Chart */}
+
             <View style={{ padding: 10, alignItems: 'center' }}>
               <PieChart
                 data={statusList
                   .map(item => ({
                     value: item.percent,
-                    color: item.colors[0], // lấy màu đầu tiên làm đại diện
+                    color: item.colors[1],
                     text: `${item.percent?.toFixed(1)}%`,
                   }))
                   .filter(item => item.value > 0)}
                 donut
-                focusOnPress
                 radius={85}
-                innerRadius={10}
+                innerRadius={20}
                 showText
                 showValuesAsLabels
-                labelsPosition="mid"
-                textColor="#000"
+                labelsPosition="outward"
+                textColor="#333"
                 textSize={12}
-                strokeWidth={3}
+                strokeWidth={6}
                 strokeColor="#fff"
+                focusOnPress
                 centerLabelComponent={() => (
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#333' }}></Text>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#999' }}></Text>
                 )}
               />
+
             </View>
           </View>
 

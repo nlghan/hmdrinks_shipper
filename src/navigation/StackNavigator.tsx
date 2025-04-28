@@ -13,6 +13,7 @@ import ChatWithUser from '../screens/ChatWithUser';
 import DirectionScreen from '../screens/DirectionScreen';
 import ForgotPassword from '../screens/ForgotPassword';
 import Analytics from '../screens/Analytics';
+import AbsenceRequest from '../screens/AbsenceRequest';
 
 // ✅ Định nghĩa kiểu cho danh sách các màn hình
 export type RootStackParamList = {
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   ChatWithUser: { shipmentId: number };
   DirectionScreen: { shipmentId: number, status: string };
   ForgotPassword: undefined;
+  AbsenceRequest: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,6 +60,7 @@ const StackNavigator = () => {
       <Stack.Screen name="DirectionScreen" component={DirectionScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false, animation:'slide_from_right' }} />
       <Stack.Screen name="Analytics" component={Analytics} options={{ headerShown: false, animation:'slide_from_right' }} />
+      <Stack.Screen name="AbsenceRequest" component={AbsenceRequest} options={{ headerShown: false, animation:'slide_from_right' }} />
     </Stack.Navigator>
   );
 };

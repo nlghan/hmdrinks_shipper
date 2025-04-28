@@ -242,7 +242,7 @@ const ChatWithUser = () => {
             if (socketRef.current) return;
             const token = await AsyncStorage.getItem('access_token');
             if (!token) return;
-            const ws = new WebSocket(`ws://192.168.89.2:1010/ws-raw?token=${encodeURIComponent(token)}&userId=${userId}`);
+            const ws = new WebSocket(`ws://192.168.78.176:1010/ws-raw?token=${encodeURIComponent(token)}&userId=${userId}`);
     
             socketRef.current = ws;
             ws.onmessage = (event) => {

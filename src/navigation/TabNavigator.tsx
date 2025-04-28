@@ -13,6 +13,7 @@ import Analytics from '../screens/Analytics';
 import Other from '../screens/Other';
 import { COLORS, FONTFAMILY } from '../theme/theme';
 import Info from '../screens/Info';
+import AbsenceRequest from '../screens/AbsenceRequest';
 
 const Tab = createBottomTabNavigator();
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
@@ -28,7 +29,7 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: t('home1'),
           tabBarIcon: ({ color }) => <Icon name="home" size={28} color={color} />,
-          headerShown:false
+          headerShown: false
         }}
       />
       <Tab.Screen
@@ -37,16 +38,25 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: t('analytics'),
           tabBarIcon: ({ color }) => <Icon name="bar-chart" size={28} color={color} />,
-          headerShown:false
+          headerShown: false
         }}
       />
-        <Tab.Screen
+      <Tab.Screen
+        name="AbsenceRequest"
+        component={AbsenceRequest}
+        options={{
+          tabBarLabel: t('leave.title'),
+          tabBarIcon: ({ color }) => <Icon name="work-history" size={28} color={color} />,
+          headerShown: false
+        }}
+      />
+      <Tab.Screen
         name="Info"
         component={Info}
         options={{
           tabBarLabel: t('info'),
           tabBarIcon: ({ color }) => <Icon name="person" size={28} color={color} />,
-          headerShown:false
+          headerShown: false
         }}
       />
       <Tab.Screen
@@ -55,7 +65,7 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: t('information.other'),
           tabBarIcon: ({ color }) => <Icon name="menu" size={28} color={color} />,
-          headerShown:false
+          headerShown: false
         }}
       />
     </Tab.Navigator>
@@ -146,7 +156,7 @@ const TabBarComponent = ({ active, options, onLayout, onPress }: TabBarComponent
       { translateY: withTiming(active ? 0 : 15, { duration: 300, easing: Easing.out(Easing.ease) }) }, // 👈 thêm dòng này
     ],
   }));
-  
+
 
   return (
     <Pressable onPress={onPress} onLayout={onLayout} style={styles.component}>
