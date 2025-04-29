@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "white",
-    paddingBottom: 70,
+    paddingBottom: 20,
   },
   editIcon: {
     position: "absolute",
