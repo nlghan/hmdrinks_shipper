@@ -14,7 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from "../utils/axiosInstance";
 import { Calendar } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
-import { format, isSameDay, differenceInDays, parseISO } from 'date-fns';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { format, isSameDay, differenceInDays, parseISO, subMonths, addMonths } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import Header from "../components/Header";
@@ -29,6 +31,18 @@ interface AbsenceRequest {
 interface ApiErrorResponse {
     message: string;
 }
+interface ShipperAttendance {
+    id: number;
+    userId: number;
+    attendanceDate: string; // yyyy-MM-dd
+    isPresent: boolean | null;
+    checkInTime: string | null; // yyyy-MM-dd HH:mm:ss
+    note: string | null;
+    status: 'ON_TIME' | 'LATE' | 'ABSENT' | 'ON_LEAVE' | 'NONE';
+    createdAt: string;
+    updatedAt: string;
+}
+
 const AbsenceRequest = () => {
     const { t } = useTranslation();
 
@@ -59,12 +73,17 @@ const AbsenceRequest = () => {
     // State
     const [userInfo, setUserInfo] = useState<any>(null);
     const [absenceRequests, setAbsenceRequests] = useState<AbsenceRequest[]>([]);
+    const [attendanceData, setAttendanceData] = useState<ShipperAttendance[]>([]);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [reason, setReason] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [error1, setError1] = useState('');
+    const [success1, setSuccess1] = useState('');
     const [workingDays, setWorkingDays] = useState<Date[]>([]);
+    const [checkInNote, setCheckInNote] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('ALL');
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -86,35 +105,125 @@ const AbsenceRequest = () => {
     }, [userId, token]);
 
     // Lấy danh sách đơn nghỉ phép
-    useEffect(() => {
-        const fetchAbsenceRequests = async () => {
-            if (!userId || !token) return;
-            try {
-                let url = `/absence-request/view/all/${userId}?page=1&limit=50`;
-                if (selectedStatus !== 'ALL') {
-                    url = `/absence-request/view/status/${userId}?status=${selectedStatus}&page=1&limit=5`;
-                }
-                const response = await axiosInstance.get(url, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setAbsenceRequests(response.data.listAbsence || []);
-            } catch (err) {
-                setError('Không thể lấy danh sách đơn nghỉ phép');
+    const fetchAbsenceRequests = async (month: number, year: number) => {
+        if (!userId || !token) return;
+        try {
+            const startDate = format(subMonths(new Date(year, month - 1, 1), 1), 'yyyy-MM-dd'); // Tháng trước
+            const endDate = format(addMonths(new Date(year, month - 1, 1), 2), 'yyyy-MM-dd'); // Tháng sau
+            let url = `/absence-request/view/all/${userId}?page=1&limit=50&startDate=${startDate}&endDate=${endDate}`;
+            if (selectedStatus !== 'ALL') {
+                url = `/absence-request/view/status/${userId}?status=${selectedStatus}&page=1&limit=50&startDate=${startDate}&endDate=${endDate}`;
             }
-        };
-        fetchAbsenceRequests();
-    }, [userId, token, selectedStatus]);
-
-    // Giả lập ngày làm việc
-    useEffect(() => {
-        const today = new Date();
-        const startOfYear = new Date(today.getFullYear(), 0, 1);
-        const days: Date[] = [];
-        for (let d = startOfYear; d <= today; d.setDate(d.getDate() + 1)) {
-            days.push(new Date(d));
+            const response = await axiosInstance.get(url, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setAbsenceRequests(response.data.listAbsence || []);
+        } catch (err) {
+            setError('Không thể lấy danh sách đơn nghỉ phép');
         }
-        setWorkingDays(days);
-    }, []);
+    };
+
+    // Lấy dữ liệu điểm danh
+    const fetchMonthlyAttendanceRange = async (userId: number, month: number, year: number) => {
+        if (!userId) return;
+        const requests = [];
+        for (let offset = -1; offset <= 1; offset++) {
+            const targetDate = new Date(year, month + offset, 1);
+            const m = targetDate.getMonth() + 1;
+            const y = targetDate.getFullYear();
+            const request = axiosInstance.get('/shipper-attendance/attendance/full-month', {
+                params: { userId, month: m, year: y },
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            requests.push(request);
+        }
+        try {
+            const results = await Promise.all(requests);
+            const mergedAttendance = results.flatMap((res) => res.data.shipperAttendanceList || []);
+            setAttendanceData(mergedAttendance);
+        } catch (error) {
+            const err = error as AxiosError;
+            setError(err.response?.data as string || 'Không thể lấy dữ liệu điểm danh');
+        }
+    };
+
+    // Gọi API khi thay đổi tháng hoặc userId
+    useEffect(() => {
+        if (userId && token) {
+            const month = currentDate.getMonth(); // 0-based
+            const year = currentDate.getFullYear();
+            fetchMonthlyAttendanceRange(userId, month, year);
+            fetchAbsenceRequests(month + 1, year);
+        }
+    }, [userId, token, selectedStatus, currentDate]);
+
+    // Check-in
+    const handleCheckIn = async () => {
+        if (!userId || !token) return;
+        try {
+            const response = await axiosInstance.post(
+                '/shipper-attendance/checkin',
+                { id: userId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const data = response.data; // object kiểu CRUDShipperAttendance
+            console.log('Check-in response:', data);
+            if (data.status === 'LATE') {
+                setSuccess1('Điểm danh trễ');
+            } else {
+                setSuccess1('Check-in thành công!');
+            }
+
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+            fetchMonthlyAttendanceRange(userId, month, year);
+
+        } catch (error) {
+            const err = error as AxiosError;
+            const message = err.response?.data as string;
+            if (message === 'Đã điểm danh hôm nay') {
+                setError1('Bạn đã điểm danh hôm nay');
+            } else {
+                setError1(message || 'Check-in thất bại');
+            }
+        }
+    };
+
+
+    // Cập nhật ghi chú
+    const handleUpdateNote = async () => {
+        if (!userId || !token) return;
+        if (!checkInNote.trim()) {
+            setError1('Ghi chú không được để trống');
+            return;
+        }
+        try {
+            const today = format(new Date(), 'yyyy-MM-dd');
+            const attendance = attendanceData.find((att) => att.attendanceDate === today);
+            if (!attendance || attendance.id === 0) {
+                setError1('Không tìm thấy bản ghi điểm danh hôm nay');
+                return;
+            }
+            await axiosInstance.post(
+                '/shipper-attendance/update-note',
+                {
+                    id: attendance.id,
+                    note: checkInNote,
+                    userId: userId,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setSuccess1('Cập nhật ghi chú thành công!');
+            setCheckInNote('');
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+            fetchMonthlyAttendanceRange(userId, month, year);
+        } catch (error) {
+            const err = error as AxiosError;
+            setError1(err.response?.data as string || 'Cập nhật ghi chú thất bại');
+        }
+    };
 
     // Xử lý chọn ngày
     const handleStartDateChange = (event: any, selectedDate?: Date) => {
@@ -136,64 +245,54 @@ const AbsenceRequest = () => {
 
 
     // Tùy chỉnh lịch
-    // Xác định ngày hôm nay
     const today = format(new Date(), 'yyyy-MM-dd');
-
-    // Tạo custom style cho ngày
-    const getCustomStyle = (color: string) => ({
-        container: {
-            backgroundColor: color,
-            borderRadius: 20,
-        },
-        text: {
-            color: '#000',
-            fontSize: 14
-        },
-    });
-
-    const markedDates = workingDays.reduce((acc: any, date: Date) => {
-        const formattedDate = format(date, 'yyyy-MM-dd');
-
-        // Nếu là hôm nay -> dùng dot
-        if (formattedDate === today) {
-            acc[formattedDate] = {
-                marked: true,
-                dotColor: '#f39c12',
-            };
-        } else {
-            acc[formattedDate] = {
-                customStyles: getCustomStyle('#72f2be54'), // ngày làm việc
-            };
-        }
-
+    const markedDates = attendanceData.reduce((acc: any, att) => {
+        acc[att.attendanceDate] = {
+            customStyles: {
+                container: {
+                    backgroundColor:
+                        att.status === 'ON_TIME' ? '#2ecc71' :
+                            att.status === 'LATE' ? '#ffd970' :
+                                att.status === 'ABSENT' ? '#e74c3c' :
+                                    att.status === 'ON_LEAVE' ? '#9b59b6' :
+                                        '#e6eaed',
+                },
+                text: { color: '#000', fontSize: 14 },
+            },
+        };
         return acc;
     }, {});
 
-    // Thêm ngày nghỉ phép
     absenceRequests.forEach((request) => {
         const start = parseISO(request.startDate);
         const end = parseISO(request.endDate);
         let currentDate = start;
         while (currentDate <= end) {
             const formattedDate = format(currentDate, 'yyyy-MM-dd');
-
-            // Tránh ghi đè dot của hôm nay
             if (formattedDate !== today) {
-                const bgColor =
-                    request.status === 'WAITING'
-                        ? '#fff48454'
-                        : request.status === 'APPROVED'
-                            ? '#84beff54'
-                            : '#ff918454';
-
                 markedDates[formattedDate] = {
-                    customStyles: getCustomStyle(bgColor),
+                    customStyles: {
+                        container: {
+                            backgroundColor:
+                                request.status === 'WAITING' ? '#fff48454' :
+                                    request.status === 'APPROVED' ? '#84beff54' :
+                                        '#ff918454',
+                        },
+                        text: { color: '#000', fontSize: 14 },
+                    },
                 };
             }
-
             currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
         }
     });
+
+    if (markedDates[today]) {
+        markedDates[today].marked = true;
+        markedDates[today].dotColor = '#f39c12';
+    } else {
+        markedDates[today] = { marked: true, dotColor: '#f39c12' };
+    }
+
 
     // Gửi yêu cầu nghỉ phép
     const handleSubmit = async () => {
@@ -277,6 +376,7 @@ const AbsenceRequest = () => {
                     <Calendar
                         markingType={'custom'}
                         markedDates={markedDates}
+                        onMonthChange={(date) => setCurrentDate(new Date(date.dateString))}
                         theme={{
                             calendarBackground: '#ffffff',
                             textSectionTitleColor: '#b6c1cd',
@@ -295,24 +395,65 @@ const AbsenceRequest = () => {
 
                     <View style={styles.legend}>
                         <View style={styles.legendItem}>
-                            <View style={[styles.legendColor, { backgroundColor: '#72f2be54' }]} />
-                            <Text style={styles.legendText}>Ngày làm việc   </Text>
+                            <View style={[styles.legendColor, { backgroundColor: '#2ecc71' }]} />
+                            <Text style={styles.legendText}>{t('absence.onTime')}</Text>
+                        </View>
+                        <View style={styles.legendItem}>
+                            <View style={[styles.legendColor, { backgroundColor: '#ffd970' }]} />
+                            <Text style={styles.legendText}>{t('absence.late')}</Text>
+                        </View>
+                        <View style={styles.legendItem}>
+                            <View style={[styles.legendColor, { backgroundColor: '#e74c3c' }]} />
+                            <Text style={styles.legendText}>{t('absence.absent')}</Text>
+                        </View>
+                        <View style={styles.legendItem}>
+                            <View style={[styles.legendColor, { backgroundColor: '#9b59b6' }]} />
+                            <Text style={styles.legendText}>{t('absence.onLeave')}</Text>
                         </View>
                         <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#fff48454' }]} />
-                            <Text style={styles.legendText}>Đang chờ duyệt</Text>
+                            <Text style={styles.legendText}>{t('absence.waiting')}</Text>
                         </View>
                         <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#84beff54' }]} />
-                            <Text style={styles.legendText}>Ngày nghỉ phép</Text>
+                            <Text style={styles.legendText}>{t('absence.approved')}</Text>
                         </View>
                         <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#ff918454' }]} />
-                            <Text style={styles.legendText}>Bị từ chối</Text>
+                            <Text style={styles.legendText}>{t('absence.rejected')}</Text>
+                        </View>
+                        <View style={styles.legendItem}>
+                            <View style={[styles.legendColor, { backgroundColor: '#e6eaed' }]} />
+                            <Text style={styles.legendText}>{t('absence.notWorking')}</Text>
                         </View>
                     </View>
                 </View>
-
+                <View style={styles.section}>
+      <Text style={styles.sectionTitleCheck}>{t('absence.checkIn')}</Text>
+      <LinearGradient
+        colors={['#1e88e5', '#42a5f5']}
+        style={styles.checkInButton}
+      >
+        <TouchableOpacity onPress={handleCheckIn} style={styles.checkInButtonInner}>
+          <Icon name="access-time" size={24} color="#fff" style={styles.buttonIcon} />
+          <Text style={styles.buttonTextCheck}>{t('absence.checkIn')}</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+      <View style={styles.inputContainer}>
+        <Icon name="edit" size={20} color="#666" style={styles.inputIcon} />
+        <TextInput
+          style={styles.inputCheck}
+          placeholder={t('absence.notePlaceholder')}
+          placeholderTextColor="#999"
+          value={checkInNote}
+          onChangeText={setCheckInNote}
+        />
+      </View>
+      <TouchableOpacity style={styles.updateButton} onPress={handleUpdateNote}>
+        <Icon name="update" size={20} color="#fff" style={styles.buttonIcon} />
+        <Text style={styles.buttonTextCheck}>{t('absence.updateNote')}</Text>
+      </TouchableOpacity>
+    </View>
 
                 {/* Form xin nghỉ phép */}
                 <View style={styles.section}>
@@ -476,6 +617,66 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginBottom: 12,
     },
+    sectionTitleCheck: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 16,
+        textAlign: 'center',
+      },
+      checkInButton: {
+        borderRadius: 12,
+        marginBottom: 12,
+        overflow: 'hidden', // Đảm bảo gradient không tràn ra ngoài
+      },
+      checkInButtonInner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 14,
+      },
+      buttonIcon: {
+        marginRight: 8,
+      },
+      buttonTextCheck: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        letterSpacing: 0.5,
+      },
+      inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 12,
+        backgroundColor: '#f9f9f9',
+        marginBottom: 16,
+      },
+      inputIcon: {
+        marginLeft: 12,
+      },
+      inputCheck: {
+        flex: 1,
+        paddingVertical: 12,
+        paddingHorizontal: 8,
+        fontSize: 16,
+        color: '#333',
+      },
+      updateButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#4caf50',
+        paddingVertical: 14,
+        borderRadius: 12,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+      },
     legend: {
         flexDirection: 'row',
         flexWrap: 'wrap',

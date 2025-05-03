@@ -33,6 +33,35 @@
     "leave": {
         "title": "Lịch nghỉ"
     },
+    "absence": {
+        "monthCalendar": "Lịch tháng",
+        "onTime": "Đúng giờ",
+        "late": "Đi trễ",
+        "absent": "Vắng không phép",
+        "onLeave": "Nghỉ phép",
+        "waiting": "Đang chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Bị từ chối",
+        "notWorking": "Chưa làm việc",
+        "checkIn": "ĐIỂM DANH",
+        "notePlaceholder": "Nhập ghi chú điểm danh",
+        "updateNote": "Cập nhật ghi chú",
+        "leaveForm": "Đơn xin nghỉ phép",
+        "fullName": "Họ tên",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "reason": "Lý do nghỉ phép",
+        "reasonPlaceholder": "Nhập lý do nghỉ phép",
+        "submitRequest": "Gửi yêu cầu",
+        "requestList": "Danh sách đơn nghỉ phép",
+        "all": "Tất cả",
+        "id": "ID",
+        "status": "Trạng thái",
+        "noRequest": "Chưa có đơn nghỉ phép nào.",
+        "loading": "Đang tải thông tin người dùng..."
+    },
     "favourite": {
         "title": "Yêu thích",
         "list": "Danh sách yêu thích"

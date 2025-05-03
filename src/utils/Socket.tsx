@@ -34,7 +34,7 @@ const useWebSocket = (userId: number) => {
                 console.log('🔑 Token được sử dụng:', token);
 
                 const encodedToken = encodeURIComponent(token);  // Encode token để tránh lỗi URL
-                const ws = new WebSocket(`ws://192.168.89.2:1010/ws-raw?token=${encodedToken}&userId=${userId}`);
+                const ws = new WebSocket(`ws://192.168.88.154:1010/ws-raw?token=${encodedToken}&userId=${userId}`);
 
                 socketRef.current = ws;
 

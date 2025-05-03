@@ -67,7 +67,7 @@ export const useShipperStore = create<ShipperStore>()(
           }
 
         } catch (error) {
-          console.error('❌ Error checking shipment:', error);
+          console.log('❌ Error checking shipment:', error);
           return false;
         }
       }
