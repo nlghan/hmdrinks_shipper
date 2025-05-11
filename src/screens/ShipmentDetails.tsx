@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Alert, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, Alert, ScrollView, TextInput, ActivityIndicator, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import {
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { useShipperStore } from "../store/store";
@@ -12,6 +18,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from "../navigation/RootStackParamList";
 import { useFetchData } from '../components/FetchDataContext';
 import CustomModalConfirm from '../styles/CustomModalConfirm';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export interface OrderItem {
     cartItemId: string;
@@ -41,7 +48,7 @@ export interface Shipment {
     address: string;
     phoneNumber: string;
     status: 'WAITING' | 'SHIPPING' | 'SUCCESS' | 'CANCELLED';
-    notes?: string;
+    note?: string;
     dateCreated: string;
     dateCancelled?: string;
     paymentId: string;
@@ -56,14 +63,16 @@ const ShipmentDetails = () => {
     const [shipment, setShipment] = useState<Shipment | null>(null);
     const [payment, setPayment] = useState<Payment | null>(null);
     const [order, setOrder] = useState<Order | null>(null);
-
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [error1, setError1] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [currentStatus, setCurrentStatus] = useState('');
+    const [note, setNote] = useState(shipment?.note || '');
+    const [noteError, setNoteError] = useState(false);
 
     const fetchShipmentDetail = async () => {
         setError("");
@@ -93,6 +102,7 @@ const ShipmentDetails = () => {
                 }
             );
             const shipmentData = shipmentResponse.data;
+            console.log('Shipment data:', shipmentData);
             setShipment(shipmentData);
 
             // Lấy thông tin thanh toán
@@ -158,7 +168,7 @@ const ShipmentDetails = () => {
             Alert.alert('Error', msg);
             return;
         }
-
+        setNote(''); // Reset ghi chú khi xác nhận trạng thái mới
         try {
             let response;
 
@@ -222,6 +232,44 @@ const ShipmentDetails = () => {
         }
     };
 
+    const handleUpdateNote = async (
+        shipmentId: number,
+        note: string,
+        setError: (error: string) => void,
+        fetchShipmentDetail: () => void
+    ) => {
+        const token = await AsyncStorage.getItem('access_token');
+        if (!token) {
+            setError(language === 'VN' ? 'Vui lòng đăng nhập lại.' : 'Please log in again.');
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.post(
+                `/shipment/update-note`,
+                {
+                    shipmentId,
+                    note,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            console.log('Note updated:', response.data);
+            fetchShipmentDetail();
+        } catch (error) {
+            console.error('Error updating note:', error);
+            setError(language === 'VN'
+                ? 'Không thể cập nhật ghi chú.'
+                : 'Unable to update note.');
+        }
+    };
+
+
     const handleConfirmStatus = () => {
         if (!selectedStatus) return;
 
@@ -276,106 +324,218 @@ const ShipmentDetails = () => {
         WAITING: '#c77ba6',
         CANCELLED: '#b3796f',
     };
+    useEffect(() => {
+        if (shipment?.note) {
+            setNote(shipment.note);
+        } else {
+            setNote('');
+        }
+    }, [shipment]);
+
 
     const handleModalConfirm = async () => {
+        // Nếu trạng thái là CANCELLED nhưng chưa nhập ghi chú thì chặn lại
+        if (currentStatus === 'CANCELLED' && note.trim() === '') {
+            setNoteError(true); // đánh dấu lỗi
+            return;
+        }
+
+
         setModalVisible(false);
+
+        // Gọi API cập nhật trạng thái đơn hàng
         await handleStatusChange(
             shipment?.shipmentId,
             currentStatus,
             fetchShipmentDetail,
             setError
         );
-        fetchData(1);
+
+        // Nếu trạng thái là CANCELLED thì gọi thêm API cập nhật ghi chú
+        if (currentStatus === 'CANCELLED' && shipment?.shipmentId) {
+            await handleUpdateNote(
+                shipment.shipmentId,
+                note,
+                setError,
+                fetchShipmentDetail
+            );
+        }
+
+        fetchData(1); // Làm mới danh sách đơn hàng
     };
 
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton}  onPress={() => navigation.goBack()} >
-                    <Icon name="arrow-back" size={20} color="#FF9800" />
-                </TouchableOpacity>
-                <Text style={styles.header}>{t('orderInfo1')}</Text>
-            </View>
-
-            {loading ? (
-                <ActivityIndicator size="large" color="#FFA983" />
-            ) : error ? (
-                <Text style={styles.errorText}>{error}</Text>
-            ) : (
-                <>
-                    <View style={styles.card}>
-                        <Text style={styles.title}>{t('orderDetail')}</Text>
-                        <Text style={styles.text}>{t('order.orderCode')}: {order?.orderId}</Text>
-                        <Text style={styles.text}>{t('order.customer')}: {shipment?.customerName}</Text>
-                        <Text style={styles.text}>{t('address')}: {shipment?.address}</Text>
-                        <Text style={styles.text}>{t('phone')}: {shipment?.phoneNumber}</Text>
-                        <Text style={styles.text}>{t('order.deliveryCode')}: {shipment?.shipmentId}</Text>
-                        <Text style={styles.text}>{t('shippingStatus')}: {shipment?.status}</Text>
-                        <Text style={styles.text}>{t('order.orderDate')}: {shipment?.dateCreated}</Text>
-                        <Text style={styles.text}>{t('note')}: {shipment?.notes || t('order.noNote')}</Text>
-                        {shipment?.status === 'CANCELLED' && shipment?.dateCancelled && (
-                            <Text>{t('order.cancelDate')}: {shipment.dateCancelled}</Text>
-                        )}
-
-                        <Text style={styles.title}>{t('infoPayment1')}</Text>
-                        <Text style={styles.text}>{t('paymentMethod')}: {payment?.paymentMethod}</Text>
-                        <Text style={styles.text}>{t('statusPayment')}: {payment?.statusPayment}</Text>
-                        <Text style={styles.text}>{t('order.total')}: {payment?.amount} VND</Text>
-
-                        <Text style={styles.title}>{t('common.proList')}</Text>
-                        {order?.listItemOrders.map(item => (
-                            <View key={item.cartItemId} style={styles.itemBox}>
-                                <Text style={styles.text}>{t('product')}: {item.proName}</Text>
-                                <Text style={styles.text}>{t('size')}: {item.size}</Text>
-                                <Text style={styles.text}>{t('price')}: {item.priceItem} VND</Text>
-                                <Text style={styles.text}>{t('quantity')}: {item.quantity}</Text>
-                                <Text style={styles.text}>{t('order.orderDetail.sum')}: {item.totalPrice} VND</Text>
-                            </View>
-                        ))}
-
-                        {/* Trạng thái và xác nhận */}
-                        <View style={{ marginTop: 16 }}>
-                            {shipment && (
-                                <Picker
-                                    enabled={shipment.status !== 'SUCCESS' && shipment.status !== 'CANCELLED'}
-                                    selectedValue={selectedStatus}
-                                    onValueChange={setSelectedStatus}
-                                    style={[styles.picker, {
-                                        backgroundColor: statusColor[shipment.status] || 'pink',
-                                        borderRadius: 10,
-                                        overflow: 'hidden',
-                                    }]}
-                                >
-                                    <Picker.Item label={t('orderContent.status.cancel')} value="CANCELLED" />
-                                    <Picker.Item label={t('orderContent.status.ship')} value="SHIPPING" />
-                                    <Picker.Item label={t('orderContent.status.complete')} value="SUCCESS" />
-                                    <Picker.Item label={t('orderContent.status.wait')} value="WAITING" />
-                                </Picker>
-                            )}
-
-                            {shipment?.status !== 'SUCCESS' && shipment?.status !== 'CANCELLED' && (
-                                <Button
-                                    title={t('order.orderDetail.confirm')}
-                                    disabled={!selectedStatus || selectedStatus === shipment?.status}
-                                    onPress={handleConfirmStatus}                                    
-                                    color="#4CAF50"
-                                    
-                                />
-                            )}
-                        </View>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView contentContainerStyle={styles.container}>
+                    <View style={styles.header}>
+                        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} >
+                            <Icon name="arrow-back" size={20} color="#FF9800" />
+                        </TouchableOpacity>
+                        <Text style={styles.header}>{t('orderInfo1')}</Text>
                     </View>
-                </>
-            )}
-            <CustomModalConfirm
-                visible={modalVisible}
-                title={language === 'VN' ? 'Xác nhận' : 'Confirmation'}
-                message={confirmMessage}
-                onCancel={() => setModalVisible(false)}
-                onConfirm={handleModalConfirm}
-                cancelText={language === 'VN' ? 'Hủy' : 'Cancel'}
-                confirmText={language === 'VN' ? 'Xác nhận' : 'Confirm'}
-            />
-        </ScrollView>
+
+                    {loading ? (
+                        <ActivityIndicator size="large" color="#FFA983" />
+                    ) : error ? (
+                        <Text style={styles.errorText}>{error}</Text>
+                    ) : (
+                        <>
+                            <View style={styles.card}>
+                                <Text style={styles.title}>{t('orderDetail')}</Text>
+                                <Text style={styles.text}>{t('order.orderCode')}: {order?.orderId}</Text>
+                                <Text style={styles.text}>{t('order.customer')}: {shipment?.customerName}</Text>
+                                <Text style={styles.text}>{t('address')}: {shipment?.address}</Text>
+                                <Text style={styles.text}>{t('phone')}: {shipment?.phoneNumber}</Text>
+                                <Text style={styles.text}>{t('order.deliveryCode')}: {shipment?.shipmentId}</Text>
+                                <Text style={styles.text}>{t('shippingStatus')}: {shipment?.status}</Text>
+                                <Text style={styles.text}>{t('order.orderDate')}: {shipment?.dateCreated}</Text>
+                                <Text style={styles.text}>{t('note')}: {shipment?.note || t('order.noNote')}</Text>
+                                {shipment?.status === 'CANCELLED' && shipment?.dateCancelled && (
+                                    <Text>{t('order.cancelDate')}: {shipment.dateCancelled}</Text>
+                                )}
+
+                                <Text style={styles.title}>{t('infoPayment1')}</Text>
+                                <Text style={styles.text}>{t('paymentMethod')}: {payment?.paymentMethod}</Text>
+                                <Text style={styles.text}>{t('statusPayment')}: {payment?.statusPayment}</Text>
+                                <Text style={styles.text}>{t('order.total')}: {payment?.amount} VND</Text>
+
+                                <Text style={styles.title}>{t('common.proList')}</Text>
+                                {order?.listItemOrders.map(item => (
+                                    <View key={item.cartItemId} style={styles.itemBox}>
+                                        <Text style={styles.text}>{t('product')}: {item.proName}</Text>
+                                        <Text style={styles.text}>{t('size')}: {item.size}</Text>
+                                        <Text style={styles.text}>{t('price')}: {item.priceItem} VND</Text>
+                                        <Text style={styles.text}>{t('quantity')}: {item.quantity}</Text>
+                                        <Text style={styles.text}>{t('order.orderDetail.sum')}: {item.totalPrice} VND</Text>
+                                    </View>
+                                ))}
+
+
+
+                                {/* Trạng thái và xác nhận */}
+                                <View style={{ marginTop: 16 }}>
+                                    {shipment && (
+                                        <Picker
+                                            enabled={shipment.status !== 'SUCCESS' && shipment.status !== 'CANCELLED'}
+                                            selectedValue={selectedStatus}
+                                            onValueChange={(value) => {
+                                                setSelectedStatus(value);
+                                                // Reset ghi chú nếu không phải CANCELLED
+                                                if (value !== 'CANCELLED') {
+                                                    setNote('');
+                                                }
+                                            }}
+                                            style={[styles.picker, {
+                                                backgroundColor: statusColor[shipment.status] || 'pink',
+                                                borderRadius: 10,
+                                                overflow: 'hidden',
+                                            }]}
+                                        >
+                                            <Picker.Item label={t('orderContent.status.cancel')} value="CANCELLED" />
+                                            <Picker.Item label={t('orderContent.status.ship')} value="SHIPPING" />
+                                            <Picker.Item label={t('orderContent.status.complete')} value="SUCCESS" />
+                                            <Picker.Item label={t('orderContent.status.wait')} value="WAITING" />
+                                        </Picker>
+                                    )}
+                                    {shipment?.note && (
+                                        <Text style={{ marginTop: 8, fontStyle: 'italic' }}>
+                                            {t('order.currentNote')}{' '}
+                                            {shipment?.note?.trim()
+                                                ? shipment.note
+                                                : language === 'VN'
+                                                    ? 'Không có ghi chú'
+                                                    : 'No note'}
+                                        </Text>
+                                    )}
+                                    {/* Ô nhập ghi chú - chỉ hiện khi chọn CANCELLED hoặc nếu cần nhập ghi chú */}
+                                    {/* Ô ghi chú */}
+                                    {shipment?.status === 'SHIPPING' && (
+                                        <View style={{ marginBottom: verticalScale(10) }}>
+                                            <TextInput
+                                                value={note}
+                                                onChangeText={(text) => {
+                                                    setNote(text);
+                                                    if (text.trim() !== '') {
+                                                        setNoteError(false);
+                                                        setError('');
+                                                    }
+                                                }}
+                                                placeholder={
+                                                    noteError
+                                                        ? (language === 'VN'
+                                                            ? 'Vui lòng nhập ghi chú khi hủy đơn'
+                                                            : 'Please enter cancellation note')
+                                                        : t('order.enterNote')
+                                                }
+                                                placeholderTextColor={noteError ? 'red' : '#aaa'}
+                                                style={{
+                                                    borderColor: noteError ? 'red' : 'gray',
+                                                    borderWidth: 1,
+                                                    borderRadius: 8,
+                                                    padding: 8,
+                                                    backgroundColor: '#fff',
+                                                    minHeight: 60,
+                                                    textAlignVertical: 'top',
+                                                }}
+                                                multiline
+                                            />
+                                        </View>
+                                    )}
+
+                                    {/* {(shipment?.status === 'SUCCESS' || shipment?.status === 'CANCELLED') && (
+                                        <View style={{ marginBottom: verticalScale(10) }}>
+                                            <View
+                                                style={{
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderRadius: 8,
+                                                    padding: 8,
+                                                    backgroundColor: '#f0f0f0',
+                                                    minHeight: 60,
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                <Text style={{ color: '#333' }}>
+                                                    {shipment.note?.trim()
+                                                        ? shipment.note
+                                                        : (language === 'VN' ? 'Không có ghi chú' : 'No note')}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )} */}
+
+                                    {error1 && <Text style={styles.errorText}>{error1}</Text>}
+
+                                    {shipment?.status !== 'SUCCESS' && shipment?.status !== 'CANCELLED' && (
+                                        <Button
+                                            title={t('order.orderDetail.confirm')}
+                                            disabled={!selectedStatus || selectedStatus === shipment?.status}
+                                            onPress={handleConfirmStatus}
+                                            color="#4CAF50"
+
+                                        />
+                                    )}
+                                </View>
+                            </View>
+                        </>
+                    )}
+                    <CustomModalConfirm
+                        visible={modalVisible}
+                        title={language === 'VN' ? 'Xác nhận' : 'Confirmation'}
+                        message={confirmMessage}
+                        onCancel={() => setModalVisible(false)}
+                        onConfirm={handleModalConfirm}
+                        cancelText={language === 'VN' ? 'Hủy' : 'Cancel'}
+                        confirmText={language === 'VN' ? 'Xác nhận' : 'Confirm'}
+                    />
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -390,9 +550,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center', // Căn giữa nội dung theo chiều ngang
-        
+
         fontSize: 25,
-        fontFamily:FONTFAMILY.lobster_regular,
+        fontFamily: FONTFAMILY.lobster_regular,
         textAlign: 'center', // Căn giữa văn bản trong Text
     },
     card: {

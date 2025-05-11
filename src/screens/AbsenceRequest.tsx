@@ -20,6 +20,7 @@ import { format, isSameDay, differenceInDays, parseISO, subMonths, addMonths } f
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import Header from "../components/Header";
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 interface AbsenceRequest {
     requestId: number;
@@ -143,7 +144,7 @@ const AbsenceRequest = () => {
             setAttendanceData(mergedAttendance);
         } catch (error) {
             const err = error as AxiosError;
-            setError(err.response?.data as string || 'Không thể lấy dữ liệu điểm danh');
+            setError(err.response?.data as string);
         }
     };
 
@@ -372,7 +373,7 @@ const AbsenceRequest = () => {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Lịch */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Lịch tháng</Text>
+                    <Text style={styles.sectionTitle}>{t('absence.monthCalendar')}</Text>
                     <Calendar
                         markingType={'custom'}
                         markedDates={markedDates}
@@ -429,51 +430,51 @@ const AbsenceRequest = () => {
                     </View>
                 </View>
                 <View style={styles.section}>
-      <Text style={styles.sectionTitleCheck}>{t('absence.checkIn')}</Text>
-      <LinearGradient
-        colors={['#1e88e5', '#42a5f5']}
-        style={styles.checkInButton}
-      >
-        <TouchableOpacity onPress={handleCheckIn} style={styles.checkInButtonInner}>
-          <Icon name="access-time" size={24} color="#fff" style={styles.buttonIcon} />
-          <Text style={styles.buttonTextCheck}>{t('absence.checkIn')}</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-      <View style={styles.inputContainer}>
-        <Icon name="edit" size={20} color="#666" style={styles.inputIcon} />
-        <TextInput
-          style={styles.inputCheck}
-          placeholder={t('absence.notePlaceholder')}
-          placeholderTextColor="#999"
-          value={checkInNote}
-          onChangeText={setCheckInNote}
-        />
-      </View>
-      <TouchableOpacity style={styles.updateButton} onPress={handleUpdateNote}>
-        <Icon name="update" size={20} color="#fff" style={styles.buttonIcon} />
-        <Text style={styles.buttonTextCheck}>{t('absence.updateNote')}</Text>
-      </TouchableOpacity>
-    </View>
+                    <Text style={styles.sectionTitleCheck}>{t('absence.checkIn')}</Text>
+                    <LinearGradient
+                        colors={['#36a0d9', '#63b9ff']}
+                        style={styles.checkInButton}
+                    >
+                        <TouchableOpacity onPress={handleCheckIn} style={styles.checkInButtonInner}>
+                            <Icon name="access-time" size={24} color="#fff" style={styles.buttonIcon} />
+                            <Text style={styles.buttonTextCheck}>{t('absence.checkIn')}</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                    <View style={styles.inputContainer}>
+                        <Icon name="edit" size={20} color="#666" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.inputCheck}
+                            placeholder={t('absence.notePlaceholder')}
+                            placeholderTextColor="#999"
+                            value={checkInNote}
+                            onChangeText={setCheckInNote}
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.updateButton} onPress={handleUpdateNote}>
+                        <Icon name="update" size={20} color="#fff" style={styles.buttonIcon} />
+                        <Text style={styles.buttonTextCheck}>{t('absence.updateNote')}</Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Form xin nghỉ phép */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Đơn xin nghỉ phép</Text>
+                    <Text style={styles.sectionTitle1}>{t('absence.leaveForm')}</Text>
                     {userInfo ? (
                         <View>
                             <View style={styles.userInfo}>
                                 <Text style={styles.userInfoText}>
-                                    <Text style={styles.bold}>Họ tên:</Text> {userInfo.fullName}
+                                    <Text style={styles.bold}>{t('absence.fullName')}</Text> {userInfo.fullName}
                                 </Text>
                                 <Text style={styles.userInfoText}>
-                                    <Text style={styles.bold}>Email:</Text> {userInfo.email}
+                                    <Text style={styles.bold}>{t('absence.email')}</Text> {userInfo.email}
                                 </Text>
                                 <Text style={styles.userInfoText}>
-                                    <Text style={styles.bold}>Số điện thoại:</Text> {userInfo.phone}
+                                    <Text style={styles.bold}>{t('absence.phone')}</Text> {userInfo.phone}
                                 </Text>
                             </View>
                             <View style={styles.datePickerContainer}>
                                 <View style={styles.formGroup}>
-                                    <Text style={styles.label}>Ngày bắt đầu:</Text>
+                                    <Text style={styles.label}>{t('absence.startDate')}</Text>
                                     <TouchableOpacity
                                         onPress={() => setShowStartDatePicker(true)}
                                         style={styles.dateInput}
@@ -493,7 +494,7 @@ const AbsenceRequest = () => {
                                     )}
                                 </View>
                                 <View style={styles.formGroup}>
-                                    <Text style={styles.label}>Ngày kết thúc:</Text>
+                                    <Text style={styles.label}>{t('absence.endDate')}</Text>
                                     <TouchableOpacity
                                         onPress={() => setShowEndDatePicker(true)}
                                         style={styles.dateInput}
@@ -515,58 +516,58 @@ const AbsenceRequest = () => {
                             </View>
                         </View>
                     ) : (
-                        <Text>Đang tải thông tin người dùng...</Text>
+                        <Text>{t('absence.loading')}</Text>
                     )}
 
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Lý do nghỉ phép:</Text>
+                        <Text style={styles.label}>{t('absence.reason')}</Text>
                         <TextInput
                             style={styles.textArea}
                             value={reason}
                             onChangeText={setReason}
-                            placeholder="Nhập lý do nghỉ phép"
+                            placeholder={t('absence.reasonPlaceholder')}
+                            placeholderTextColor="#999"
                             multiline
                         />
                     </View>
                     {error ? <Text style={styles.error}>{error}</Text> : null}
                     {success ? <Text style={styles.success}>{success}</Text> : null}
                     <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                        <Text style={styles.submitButtonText}>Gửi yêu cầu</Text>
+                        <Text style={styles.submitButtonText}>{t('absence.submitRequest')}</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Danh sách đơn nghỉ phép */}
                 <View style={styles.section}>
                     <View style={styles.listHeader}>
-                        <Text style={styles.sectionTitle}>Danh sách đơn nghỉ phép</Text>
+                        <Text style={styles.sectionTitle}>{t('absence.leaveForm1')}</Text>
                         <View style={styles.statusFilter}>
                             <Picker
                                 selectedValue={selectedStatus}
                                 onValueChange={(itemValue) => setSelectedStatus(itemValue)}
                                 style={styles.select}
+                                mode="dropdown"
                             >
-                                <Picker.Item label="Tất cả" value="ALL" />
-                                <Picker.Item label="Đang chờ" value="WAITING" />
-                                <Picker.Item label="Đã duyệt" value="APPROVED" />
-                                <Picker.Item label="Bị từ chối" value="REJECTED" />
+                                <Picker.Item label={t('absence.all')} value="ALL" />
+                                <Picker.Item label={t('absence.waiting')} value="WAITING" />
+                                <Picker.Item label={t('absence.approved')} value="APPROVED" />
+                                <Picker.Item label={t('absence.rejected')} value="REJECTED" />
                             </Picker>
                         </View>
                     </View>
                     {absenceRequests.length > 0 ? (
                         <View style={styles.table}>
                             <View style={[styles.tableRow, styles.tableHeader]}>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.5 }]}>STT</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>Lý do</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>Bắt đầu</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>Kết thúc</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>Trạng thái</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.6 }]}>{t('absense.id')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.reasonShot')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.start-end')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.status')}</Text>
                             </View>
                             {absenceRequests.map((request, index) => (
                                 <View key={request.requestId} style={styles.tableRow}>
                                     <Text style={[styles.tableCell, { flex: 0.5 }]}>{index + 1}</Text>
                                     <Text style={styles.tableCell}>{request.reason}</Text>
-                                    <Text style={styles.tableCell}>{format(new Date(request.startDate), 'dd-MM-yyyy')}</Text>
-                                    <Text style={styles.tableCell}>{format(new Date(request.endDate), 'dd-MM-yyyy')}</Text>
+                                    <Text style={styles.tableCell}>{format(new Date(request.startDate), 'dd-MM-yyyy')} - {format(new Date(request.endDate), 'dd-MM-yyyy')}</Text>
 
                                     <Text
                                         style={[
@@ -575,17 +576,17 @@ const AbsenceRequest = () => {
                                         ]}
                                     >
                                         {request.status === 'WAITING'
-                                            ? 'Đang chờ'
+                                            ? t('absence.waiting')
                                             : request.status === 'APPROVED'
-                                                ? 'Đã duyệt'
-                                                : 'Từ chối'}
+                                                ? t('absence.approved')
+                                                : t('absence.rejected')}
                                     </Text>
                                 </View>
                             ))}
                         </View>
 
                     ) : (
-                        <Text>Chưa có đơn nghỉ phép nào.</Text>
+                        <Text>{t('absence.noRequest')}</Text>
                     )}
                 </View>
             </ScrollView>
@@ -613,9 +614,15 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '600',
-        marginBottom: 12,
+        textAlign: 'center',
+    },
+        sectionTitle1: {
+        fontSize: 20,
+        fontWeight: '600',
+        textAlign: 'center',
+        marginBottom: 10,
     },
     sectionTitleCheck: {
         fontSize: 20,
@@ -623,28 +630,28 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 16,
         textAlign: 'center',
-      },
-      checkInButton: {
+    },
+    checkInButton: {
         borderRadius: 12,
         marginBottom: 12,
         overflow: 'hidden', // Đảm bảo gradient không tràn ra ngoài
-      },
-      checkInButtonInner: {
+    },
+    checkInButtonInner: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 14,
-      },
-      buttonIcon: {
+    },
+    buttonIcon: {
         marginRight: 8,
-      },
-      buttonTextCheck: {
+    },
+    buttonTextCheck: {
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
         letterSpacing: 0.5,
-      },
-      inputContainer: {
+    },
+    inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1,
@@ -652,22 +659,22 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: '#f9f9f9',
         marginBottom: 16,
-      },
-      inputIcon: {
+    },
+    inputIcon: {
         marginLeft: 12,
-      },
-      inputCheck: {
+    },
+    inputCheck: {
         flex: 1,
         paddingVertical: 12,
         paddingHorizontal: 8,
         fontSize: 16,
         color: '#333',
-      },
-      updateButton: {
+    },
+    updateButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#4caf50',
+        backgroundColor: '#73c976',
         paddingVertical: 14,
         borderRadius: 12,
         marginBottom: 16,
@@ -676,7 +683,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 2,
-      },
+    },
     legend: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -750,7 +757,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     submitButton: {
-        backgroundColor: '#FF5733',
+        backgroundColor: '#ff854d',
         padding: 12,
         borderRadius: 8,
         alignItems: 'center',
@@ -763,28 +770,32 @@ const styles = StyleSheet.create({
     },
     listHeader: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 12,
+        justifyContent: 'space-between',
     },
     statusFilter: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    select: {
+        width: '40%', // Chiếm toàn bộ chiều ngang
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 4,
-        padding: 8,
+        borderRadius: 6,
+        overflow: 'hidden',
+        backgroundColor: '#fff',
+    },
+    select: {
+        width: '100%',
+        color: '#333',        
+        paddingHorizontal: 12,
+        fontSize: 12,
     },
     table: {
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#eb8e59',
         borderRadius: 8,
         overflow: 'hidden',
     },
     tableHeader: {
-        backgroundColor: '#f1f1f1',
+        backgroundColor: '#f7ece6',
     },
     tableRow: {
         flexDirection: 'row',

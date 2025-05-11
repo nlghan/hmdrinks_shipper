@@ -13,6 +13,8 @@ import { Picker } from '@react-native-picker/picker';
 import SelectBox from '../components/SelectBox';
 import LinearGradient from 'react-native-linear-gradient';
 import MonthYearPicker from '../components/MonthYearPicker';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { ActivityIndicator } from 'react-native';
 
 
 type Month = '01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | '10' | '11' | '12';
@@ -40,6 +42,7 @@ const radius = 85;
 const innerRadius = 40;
 
 const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
+  const { t } = useTranslation();
   const [successfulShipments, setSuccessfulShipments] = useState<number[]>([]);
   const [paymentAmounts, setPaymentAmounts] = useState<number[]>([]);
   const [percentages, setPercentages] = useState<number[]>([]);
@@ -47,6 +50,8 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
   const [combinedData, setCombinedData] = useState<{ label: string; orders: number; revenue: number }[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<Month>('04');
   const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading1, setIsLoading1] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBarInfo, setSelectedBarInfo] = useState<{
     date: string;
@@ -56,10 +61,10 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
 
 
   const statusList = [
-    { label: 'Chờ xử lý', colors: ['#FFE0B2', '#FFCC80'], percent: percentages[0], icon: '⏳' },
-    { label: 'Đang giao', colors: ['#B3E5FC', '#81D4FA'], percent: percentages[1], icon: '🚚' },
-    { label: 'Thành công', colors: ['#C8E6C9', '#A5D6A7'], percent: percentages[2], icon: '✅' },
-    { label: 'Hủy', colors: ['#FFCDD2', '#EF9A9A'], percent: percentages[3], icon: '❌' },
+    { label: t('ana.waiting'), colors: ['#FFE0B2', '#FFCC80'], percent: percentages[0], icon: '⏳' },
+    { label: t('ana.shipping'), colors: ['#B3E5FC', '#81D4FA'], percent: percentages[1], icon: '🚚' },
+    { label: t('ana.success'), colors: ['#C8E6C9', '#A5D6A7'], percent: percentages[2], icon: '✅' },
+    { label: t('ana.cancel'), colors: ['#FFCDD2', '#EF9A9A'], percent: percentages[3], icon: '❌' },
   ];
 
   const total = statusList.reduce((sum, item) => sum + item.percent, 0);
@@ -105,6 +110,7 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
 
   const fetchShipmentCounts = async () => {
     try {
+      setIsLoading(true);
       const token = await AsyncStorage.getItem("access_token");
       console.log('Token testtttt', token);
       if (!token) return;
@@ -129,11 +135,14 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
       console.log('Percentages:', percentArray);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchShipments = async (month: string, year: number, language: string) => {
     try {
+      setIsLoading1(true);
       const token = await AsyncStorage.getItem("access_token");
       if (!token) return;
       const lang = language as 'vi';
@@ -185,6 +194,8 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
 
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading1(false);
     }
   };
 
@@ -244,6 +255,14 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
     setShowModal(false);
   };
 
+  const monthToEnglish = (month: any) => {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months[month - 1] || '';
+  };
+
   return (
     <View>
       <Header
@@ -261,8 +280,10 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
         }}
       />
       <ScrollView style={{ padding: 8, backgroundColor: '#f5f5f5f5' }} contentContainerStyle={{ paddingBottom: 135 }}>
+
         <View style={{ padding: 8, backgroundColor: 'white', borderRadius: 8, }} >
-          <Text style={{ fontSize: 26, fontWeight: '600', color: 'black', marginBottom: 8, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>Biểu đồ doanh thu</Text>
+          <Text style={{ fontSize: moderateScale(23), fontWeight: '600', color: 'black', marginBottom: 8, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>
+            {t('ana.revenueChart')}</Text>
           <View style={{ flex: 1, paddingBottom: 5 }}>
             {/* Button chọn tháng năm */}
             <TouchableOpacity
@@ -284,11 +305,23 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
                 marginBottom: 5,
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#333', fontFamily: FONTFAMILY.lobster_regular }}>
+              <Text
+                style={{
+                  fontSize: moderateScale(16),
+                  fontWeight: '600',
+                  color: '#333',
+                  fontFamily: FONTFAMILY.lobster_regular,
+                }}
+              >
                 {selectedBarInfo
-                  ? `📅 Ngày: ${selectedBarInfo.date}`
-                  : `📅 Tháng ${selectedMonth} - Năm ${selectedYear}`}
+                  ? language === 'vi'
+                    ? `📅 Ngày: ${selectedBarInfo.date}`
+                    : `📅 Date: ${selectedBarInfo.date}`
+                  : language === 'vi'
+                    ? `📅 Tháng ${selectedMonth} - Năm ${selectedYear}`
+                    : `📅 ${monthToEnglish(selectedMonth)} - ${selectedYear}`}
               </Text>
+
             </TouchableOpacity>
 
             {/* Modal chọn tháng năm */}
@@ -298,8 +331,6 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
               onApply={handleApply}
             />
           </View>
-
-
           {selectedBarInfo && (
             <View
               style={{
@@ -326,11 +357,11 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
                   justifyContent: 'center',
                 }}
               >
-                <Text style={{ fontSize: 18, color: '#388E3C', marginBottom: 4, fontFamily: FONTFAMILY.lobster_regular }}>
-                  📦 Số đơn hàng
+                <Text style={{ fontSize: moderateScale(16), color: '#388E3C', marginBottom: 4, fontFamily: FONTFAMILY.lobster_regular }}>
+                  📦 {t('ana.orderNumber')}
                 </Text>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>
-                  {selectedBarInfo.orders} đơn
+                <Text style={{ fontSize: moderateScale(15), fontWeight: 'bold', color: 'black' }}>
+                  {selectedBarInfo.orders} {t('ana.orders')}
                 </Text>
               </View>
 
@@ -354,17 +385,17 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
               >
                 <Text
                   style={{
-                    fontSize: 18,
+                    fontSize: moderateScale(16),
                     color: '#388E3C',
                     marginBottom: 4,
                     fontFamily: FONTFAMILY.lobster_regular
                   }}
                 >
-                  💰 Doanh thu
+                  💰 {t('ana.totalRevenue')}
                 </Text>
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: moderateScale(15),
                     fontWeight: 'bold',
                     color: 'black',
                   }}
@@ -375,97 +406,100 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
 
             </View>
           )}
-
-
           {combinedData.length === 0 || combinedData.every(item => item.orders === 0) ? (
-            <Text style={{ textAlign: 'center', marginTop: 24, fontSize: 16, color: '#888' }}>
-              Tháng này không có đơn hàng thành công
+            <Text style={{ textAlign: 'center', marginTop: 24, fontSize: moderateScale(14), color: '#888' }}>
+              {t('ana.noData')}
             </Text>
           ) : (
-            <View style={{ padding: 12 }}>
+            <View style={{ padding: scale(16) }}>
               <View style={{ position: 'relative' }}>
-                {/* Biểu đồ cột & đường */}
-                <BarChart
-                  data={combinedChartData.map(item => ({
-                    value: item.revenue / 1000, // 🟩 Cột là doanh thu
-                    label: item.label,
-                    frontColor: '#4CAF50',
-                    topLabelComponent: () =>
-                      item.orders > 0 ? (
-                        < View style={{ width: 60, alignItems: 'center', position: 'absolute', bottom: 5 }}>
-                          <Text
-                            style={{
-                              fontSize: 9,
-                              color: '#333',
-                              textAlign: 'center',
-                              flexWrap: 'wrap',
-                              marginBottom: 11,
-                            }}
-                            numberOfLines={2}
-                            ellipsizeMode="tail"
-                          >
-                            {item.orders.toLocaleString()}
-                          </Text>
-                        </View>
-                      ) : null,
-                    lineData: {
-                      value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
-                    },
-                    onPress: () => {
-                      const selectedDate = `${item.label}/${selectedMonth}/${selectedYear}`;
-                      setSelectedBarInfo({
-                        date: selectedDate,
-                        orders: item.orders,
-                        revenue: item.revenue,
-                      });
-                    },
-                  }))}
-                  barWidth={30}
-                  initialSpacing={8}
-                  spacing={15}
-                  barBorderRadius={6}
-                  showGradient
-                  yAxisThickness={1}
-                  xAxisType="dashed"
-                  xAxisColor="lightgray"
-                  yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft: -20 }}
-                  xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
-                  maxValue={adjustedMaxValue / 1000}
-                  stepValue={stepValue / 1000}
-                  noOfSections={noOfSections}
-                  labelWidth={20}
-                  showLine
-                  lineConfig={{
-                    color: '#f44336',
-                    thickness: 2,
-                    curved: true,
-                    hideDataPoints: false,
-                    dataPointsColor: '#f44336',
-                    shiftY: 9,
-                    initialSpacing: 8,
-                    isAnimated: true,
-                  }}
-                  yAxisLabelSuffix="K"
-                />
-
+                {isLoading ? (
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginRight: scale(20) }}>
+                    <ActivityIndicator size="large" color="#f79539" />
+                    <Text style={{ marginTop: 10, color: '#666' }}>{t('ana.loading')}</Text>
+                  </View>
+                ) : (
+                  <>
+                    {/* Biểu đồ cột & đường */}
+                    <BarChart
+                      data={combinedChartData.map(item => ({
+                        value: item.revenue / 1000, // 🟩 Cột là doanh thu
+                        label: item.label,
+                        frontColor: '#4CAF50',
+                        topLabelComponent: () =>
+                          item.orders > 0 ? (
+                            < View style={{ width: 60, alignItems: 'center', position: 'absolute', bottom: 5 }}>
+                              <Text
+                                style={{
+                                  fontSize: 9,
+                                  color: '#333',
+                                  textAlign: 'center',
+                                  flexWrap: 'wrap',
+                                  marginBottom: verticalScale(10),
+                                }}
+                                numberOfLines={2}
+                                ellipsizeMode="tail"
+                              >
+                                {item.orders.toLocaleString()}
+                              </Text>
+                            </View>
+                          ) : null,
+                        lineData: {
+                          value: item.ordersScaled, // 🔴 Line là số đơn (đã scale)
+                        },
+                        onPress: () => {
+                          const selectedDate = `${item.label}/${selectedMonth}/${selectedYear}`;
+                          setSelectedBarInfo({
+                            date: selectedDate,
+                            orders: item.orders,
+                            revenue: item.revenue,
+                          });
+                        },
+                      }))}
+                      barWidth={30}
+                      initialSpacing={8}
+                      spacing={15}
+                      barBorderRadius={6}
+                      showGradient
+                      yAxisThickness={1}
+                      xAxisType="dashed"
+                      xAxisColor="lightgray"
+                      yAxisTextStyle={{ color: 'gray', fontSize: 11, marginLeft: -20 }}
+                      xAxisLabelTextStyle={{ color: 'gray', textAlign: 'center' }}
+                      maxValue={adjustedMaxValue / 1000}
+                      stepValue={stepValue / 1000}
+                      noOfSections={noOfSections}
+                      labelWidth={20}
+                      showLine
+                      lineConfig={{
+                        color: '#f44336',
+                        thickness: 2,
+                        curved: true,
+                        hideDataPoints: false,
+                        dataPointsColor: '#f44336',
+                        shiftY: 9,
+                        initialSpacing: 8,
+                        isAnimated: true,
+                      }}
+                      yAxisLabelSuffix="K"
+                    />
+                  </>)}
               </View>
 
               {/* Chú thích biểu đồ */}
               <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
-                  <View style={{ width: 12, height: 12, backgroundColor: '#4CAF50', marginRight: 4 }} />
-                  <Text style={{ fontSize: 13 }}>Doanh thu (VNĐ)</Text>
+                  <View style={{ width: scale(12), height: verticalScale(12), backgroundColor: '#4CAF50', marginRight: 4 }} />
+                  <Text style={{ fontSize: moderateScale(13) }}>{t('ana.totalRevenueVND')}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={{ width: 12, height: 12, backgroundColor: '#f44336', marginRight: 4 }} />
-                  <Text style={{ fontSize: 13 }}>Số đơn thành công</Text>
+                  <View style={{ width: scale(12), height: verticalScale(12), backgroundColor: '#f44336', marginRight: 4 }} />
+                  <Text style={{ fontSize: moderateScale(13) }}>{t('ana.orderSuccess')}</Text>
                 </View>
               </View>
             </View>
           )}
-
         </View>
-
 
         <View style={{
           padding: 5,
@@ -479,7 +513,8 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
           elevation: 1,
         }}>
 
-          <Text style={{ fontSize: 26, fontWeight: '600', color: 'black', marginTop: 20, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>Phần trăm trạng thái đơn hàng</Text>
+          <Text style={{ fontSize: moderateScale(23), fontWeight: '600', color: 'black', marginTop: 20, fontFamily: FONTFAMILY.lobster_regular, textAlign: 'center' }}>
+            {t('ana.orderPer')}</Text>
 
           <View style={{ flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 12 }}>
 
@@ -496,31 +531,39 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
             </View>
 
 
-            <View style={{ padding: 10, alignItems: 'center' }}>
-              <PieChart
-                data={statusList
-                  .map(item => ({
-                    value: item.percent,
-                    color: item.colors[1],
-                    text: `${item.percent?.toFixed(1)}%`,
-                  }))
-                  .filter(item => item.value > 0)}
-                donut
-                radius={85}
-                innerRadius={20}
-                showText
-                showValuesAsLabels
-                labelsPosition="outward"
-                textColor="#333"
-                textSize={12}
-                strokeWidth={6}
-                strokeColor="#fff"
-                focusOnPress
-                centerLabelComponent={() => (
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#999' }}></Text>
-                )}
-              />
-
+            <View style={{ padding: scale(10), alignItems: 'center' }}>
+              {isLoading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginRight: scale(20) }}>
+                  <ActivityIndicator size="large" color="#f79539" />
+                  <Text style={{ marginTop: 10, color: '#666' }}>{t('ana.loading')}</Text>
+                </View>
+              ) : (
+                <>
+                  <PieChart
+                    data={statusList
+                      .map(item => ({
+                        value: item.percent,
+                        color: item.colors[1],
+                        text: `${item.percent?.toFixed(1)}%`,
+                      }))
+                      .filter(item => item.value > 0)}
+                    donut
+                    radius={85}
+                    innerRadius={20}
+                    showText
+                    showValuesAsLabels
+                    labelsPosition="outward"
+                    textColor="#333"
+                    textSize={12}
+                    strokeWidth={6}
+                    strokeColor="#fff"
+                    focusOnPress
+                    centerLabelComponent={() => (
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: '#999' }}></Text>
+                    )}
+                  />
+                </>
+              )}
             </View>
           </View>
 

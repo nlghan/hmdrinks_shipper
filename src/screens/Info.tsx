@@ -513,7 +513,7 @@ const Info: React.FC = () => {
   if (success) return <Text style={styles.success}>{success}</Text>;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Header
         style={{
           paddingHorizontal: 14,
@@ -528,243 +528,247 @@ const Info: React.FC = () => {
           elevation: 5,
         }}
       />
-      <View style={styles.card}>
-        <Modal visible={isModalVisibleV} animationType="fade" transparent={true}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.card}>
+          <Modal visible={isModalVisibleV} animationType="fade" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>{t('information.voucherList')}</Text>
+                {loading ? (
+                  <ActivityIndicator size="large" color="#FF9800" />
+                ) : (
+                  <FlatList
+                    data={voucherList}
+                    keyExtractor={(item) => item.voucherId.toString()}
+                    renderItem={({ item }) => (
+                      <View style={styles.voucherItem}>
+                        <Text style={styles.voucherKey}>{item.key}</Text>
+                        <Text
+                          style={[
+                            styles.voucherStatus,
+                            { color: item.status === "USED" ? "red" : item.status === "EXPIRED" ? "gray" : "green" },
+                          ]}
+                        >
+                          {item.status === "USED"
+                            ? t('information.used')
+                            : item.status === "EXPIRED"
+                              ? t('information.expired')
+                              : t('information.inactive')}
+                        </Text>
+
+                      </View>
+                    )}
+                  />
+
+                )}
+
+                <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisibleV(false)}>
+                  <Text style={styles.closeButtonText}>{t('close')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <View style={styles.avatarContainer}>
+            {previewImage ? (
+              <View style={styles.avatarWrapper}>
+                <Image source={{ uri: previewImage }} style={styles.avatar} />
+                {isUploading && (
+                  <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color="#fff" />
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={styles.placeholder}>
+                <Text style={styles.placeholderText}>N/A</Text>
+              </View>
+            )}
+            <TouchableOpacity style={styles.updateButton}>
+              <Text style={styles.buttonText} onPress={pickImage} disabled={isUploading} >{t('postContent.uploadImg')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+
+          {/* Thông tin người dùng */}
+          <View style={styles.infoContainer}>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('fullName')}:</Text>
+              <Text style={styles.value}>{formData.fullName}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('email')}:</Text>
+              <Text style={styles.value}>{formData.email}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('phone')}:</Text>
+              <Text style={styles.value}>{formData.phoneNumber}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('information.gender')}:</Text>
+              <Text style={styles.value}>{convertSexToFrontend(formData.sex)}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('information.birthday')}:</Text>
+              <Text style={styles.value}>{formData.birthDay}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>{t('address')}:</Text>
+              <Text style={styles.value}>
+                {formData.street}, {formData.ward}, {formData.district}, {formData.city}
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.updateButton} onPress={toggleModal}>
+              <Text style={styles.buttonText}>{t('updateBtn')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* Modal chỉnh sửa */}
+        <Modal visible={isModalVisible} animationType="fade" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{t('information.voucherList')}</Text>
-              {loading ? (
-                <ActivityIndicator size="large" color="#FF9800" />
-              ) : (
-                <FlatList
-                  data={voucherList}
-                  keyExtractor={(item) => item.voucherId.toString()}
-                  renderItem={({ item }) => (
-                    <View style={styles.voucherItem}>
-                      <Text style={styles.voucherKey}>{item.key}</Text>
-                      <Text
-                        style={[
-                          styles.voucherStatus,
-                          { color: item.status === "USED" ? "red" : item.status === "EXPIRED" ? "gray" : "green" },
-                        ]}
-                      >
-                        {item.status === "USED"
-                          ? t('information.used')
-                          : item.status === "EXPIRED"
-                            ? t('information.expired')
-                            : t('information.inactive')}
-                      </Text>
+              <Text style={styles.modalTitle}>{t('userContent.update')}</Text>
 
-                    </View>
+              {/* Họ và tên */}
+              <TextInput
+                style={styles.input}
+                placeholder={t('fullName')}
+                placeholderTextColor="gray"
+                value={editedData.fullName}
+                onChangeText={(text) => setEditedData({ ...editedData, fullName: text })}
+              />
+
+              {/* Email */}
+              <TextInput
+                style={styles.input}
+                placeholder={t('email')}
+                placeholderTextColor="gray"
+                value={editedData.email}
+                textAlign="left" // Giữ nội dung căn trá
+                onChangeText={(text) => setEditedData({ ...editedData, email: text })}
+              />
+
+              {/* Số điện thoại */}
+              <TextInput
+                style={styles.input}
+                placeholder={t('phone')}
+                placeholderTextColor="gray"
+                keyboardType="phone-pad"
+                value={editedData.phoneNumber}
+                onChangeText={(text) => setEditedData({ ...editedData, phoneNumber: text })}
+              />
+
+              <View style={styles.rowContainer}>
+                {/* Giới tính */}
+                <View style={styles.pickerContainer}>
+                  <Text style={styles.label}>{t('information.gender')}:</Text>
+                  <Picker
+                    selectedValue={formData.sex}
+                    style={styles.picker}
+                    onValueChange={(itemValue) => {
+                      // Alert.alert("selectedValue", itemValue);             
+                      const dataUpdate = { ...editedData, sex: itemValue };
+                      setEditedData(dataUpdate);
+                      // Alert.alert("editdata", editedData.sex); 
+                    }
+                    }
+                  >
+                    <Picker.Item label={t('information.male')} value="MALE" />
+                    <Picker.Item label={t('information.female')} value="FEMALE" />
+                    <Picker.Item label={t('information.other')} value="OTHER" />
+                  </Picker>
+                </View>
+
+                {/* Ngày sinh */}
+                <View style={styles.dateContainer}>
+                  <Text style={styles.label}>{t('information.birthday')}:</Text>
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+                    <Text style={styles.dateText}>{editedData.birthDay || "Chọn ngày sinh"}</Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={editedData.birthDay ? new Date(editedData.birthDay) : new Date()}
+                      mode="date"
+                      display="default"
+                      onChange={(event, selectedDate) => {
+                        setShowDatePicker(false);
+                        if (selectedDate) {
+                          setEditedData({ ...editedData, birthDay: selectedDate.toISOString().split('T')[0] });
+                        }
+                      }}
+                    />
                   )}
-                />
+                </View>
+              </View>
 
-              )}
+              {/* Địa chỉ */}
+              <TextInput
+                style={styles.input}
+                placeholder={t('information.detailAddress')}
+                placeholderTextColor="gray"
+                value={editedData.street}
+                onChangeText={(text) => setEditedData({ ...editedData, street: text })}
+              />
+              <Picker
+                selectedValue={editedData.city}
+                onValueChange={(itemValue) => handleCityChange(itemValue)}
+                style={styles.pickerAd}
+              >
+                <Picker.Item label={t('information.selectCity')} value="" />
+                {provinces.map((province) => (
+                  <Picker.Item key={province.provinceId} label={province.provinceName} value={province.provinceName} />
+                ))}
+              </Picker>
 
-              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisibleV(false)}>
-                <Text style={styles.closeButtonText}>{t('close')}</Text>
-              </TouchableOpacity>
+              <Picker
+                selectedValue={editedData.district}
+                onValueChange={(itemValue) => { handleDistrictChange(itemValue) }}
+                style={styles.pickerAd}
+                enabled={districts.length > 0}
+              >
+                <Picker.Item label={t('information.selectDistrict')} value="" />
+                {districts.map((district) => (
+                  <Picker.Item key={district.districtId} label={district.districtName} value={district.districtName} />
+                ))}
+              </Picker>
+
+              <Picker
+                selectedValue={editedData.ward}
+                onValueChange={(itemValue) => handleWardChange(itemValue)}
+                style={styles.pickerAd}
+                enabled={wards.length > 0}
+              >
+                <Picker.Item label={t('information.selectWard')} value="" />
+                {wards.map((ward) => (
+                  <Picker.Item key={ward.wardId} label={ward.wardName} value={ward.wardName} />
+                ))}
+              </Picker>
+
+
+              <View style={styles.buttonRow}>
+                <TouchableOpacity style={styles.modalButton} onPress={handleUpdate}>
+                  <Text style={styles.buttonText}>{t('updateBtn')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
+                  <Text style={styles.buttonText}>{t('order.orderDetail.cancel')}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
-        <View style={styles.avatarContainer}>
-          {previewImage ? (
-            <View style={styles.avatarWrapper}>
-              <Image source={{ uri: previewImage }} style={styles.avatar} />
-              {isUploading && (
-                <View style={styles.loadingOverlay}>
-                  <ActivityIndicator size="large" color="#fff" />
-                </View>
-              )}
-            </View>
-          ) : (
-            <View style={styles.placeholder}>
-              <Text style={styles.placeholderText}>N/A</Text>
-            </View>
-          )}
-          <TouchableOpacity style={styles.updateButton}>
-            <Text style={styles.buttonText} onPress={pickImage} disabled={isUploading} >{t('postContent.uploadImg')}
-            </Text>
-          </TouchableOpacity>
-        </View>
 
-
-        {/* Thông tin người dùng */}
-        <View style={styles.infoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('fullName')}:</Text>
-            <Text style={styles.value}>{formData.fullName}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('email')}:</Text>
-            <Text style={styles.value}>{formData.email}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('phone')}:</Text>
-            <Text style={styles.value}>{formData.phoneNumber}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('information.gender')}:</Text>
-            <Text style={styles.value}>{convertSexToFrontend(formData.sex)}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('information.birthday')}:</Text>
-            <Text style={styles.value}>{formData.birthDay}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>{t('address')}:</Text>
-            <Text style={styles.value}>
-              {formData.street}, {formData.ward}, {formData.district}, {formData.city}
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.updateButton} onPress={toggleModal}>
-            <Text style={styles.buttonText}>{t('updateBtn')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      {/* Modal chỉnh sửa */}
-      <Modal visible={isModalVisible} animationType="fade" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{t('userContent.update')}</Text>
-
-            {/* Họ và tên */}
-            <TextInput
-              style={styles.input}
-              placeholder={t('fullName')}
-              placeholderTextColor="gray"
-              value={editedData.fullName}
-              onChangeText={(text) => setEditedData({ ...editedData, fullName: text })}
-            />
-
-            {/* Email */}
-            <TextInput
-              style={styles.input}
-              placeholder={t('email')}
-              placeholderTextColor="gray"
-              value={editedData.email}
-              textAlign="left" // Giữ nội dung căn trá
-              onChangeText={(text) => setEditedData({ ...editedData, email: text })}
-            />
-
-            {/* Số điện thoại */}
-            <TextInput
-              style={styles.input}
-              placeholder={t('phone')}
-              placeholderTextColor="gray"
-              keyboardType="phone-pad"
-              value={editedData.phoneNumber}
-              onChangeText={(text) => setEditedData({ ...editedData, phoneNumber: text })}
-            />
-
-            <View style={styles.rowContainer}>
-              {/* Giới tính */}
-              <View style={styles.pickerContainer}>
-                <Text style={styles.label}>{t('information.gender')}:</Text>
-                <Picker
-                  selectedValue={formData.sex}
-                  style={styles.picker}
-                  onValueChange={(itemValue) => {
-                    // Alert.alert("selectedValue", itemValue);             
-                    const dataUpdate = { ...editedData, sex: itemValue };
-                    setEditedData(dataUpdate);
-                    // Alert.alert("editdata", editedData.sex); 
-                  }
-                  }
-                >
-                  <Picker.Item label={t('information.male')} value="MALE" />
-                  <Picker.Item label={t('information.female')} value="FEMALE" />
-                  <Picker.Item label={t('information.other')} value="OTHER" />
-                </Picker>
-              </View>
-
-              {/* Ngày sinh */}
-              <View style={styles.dateContainer}>
-                <Text style={styles.label}>{t('information.birthday')}:</Text>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
-                  <Text style={styles.dateText}>{editedData.birthDay || "Chọn ngày sinh"}</Text>
-                </TouchableOpacity>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={editedData.birthDay ? new Date(editedData.birthDay) : new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                      setShowDatePicker(false);
-                      if (selectedDate) {
-                        setEditedData({ ...editedData, birthDay: selectedDate.toISOString().split('T')[0] });
-                      }
-                    }}
-                  />
-                )}
-              </View>
-            </View>
-
-            {/* Địa chỉ */}
-            <TextInput
-              style={styles.input}
-              placeholder={t('information.detailAddress')}
-              placeholderTextColor="gray"
-              value={editedData.street}
-              onChangeText={(text) => setEditedData({ ...editedData, street: text })}
-            />
-            <Picker
-              selectedValue={editedData.city}
-              onValueChange={(itemValue) => handleCityChange(itemValue)}
-              style={styles.pickerAd}
-            >
-              <Picker.Item label={t('information.selectCity')} value="" />
-              {provinces.map((province) => (
-                <Picker.Item key={province.provinceId} label={province.provinceName} value={province.provinceName} />
-              ))}
-            </Picker>
-
-            <Picker
-              selectedValue={editedData.district}
-              onValueChange={(itemValue) => { handleDistrictChange(itemValue) }}
-              style={styles.pickerAd}
-              enabled={districts.length > 0}
-            >
-              <Picker.Item label={t('information.selectDistrict')} value="" />
-              {districts.map((district) => (
-                <Picker.Item key={district.districtId} label={district.districtName} value={district.districtName} />
-              ))}
-            </Picker>
-
-            <Picker
-              selectedValue={editedData.ward}
-              onValueChange={(itemValue) => handleWardChange(itemValue)}
-              style={styles.pickerAd}
-              enabled={wards.length > 0}
-            >
-              <Picker.Item label={t('information.selectWard')} value="" />
-              {wards.map((ward) => (
-                <Picker.Item key={ward.wardId} label={ward.wardName} value={ward.wardName} />
-              ))}
-            </Picker>
-
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity style={styles.modalButton} onPress={handleUpdate}>
-                <Text style={styles.buttonText}>{t('updateBtn')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
-                <Text style={styles.buttonText}>{t('order.orderDetail.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: "white",
-    paddingBottom: 20,
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  scrollContent: {
+    padding: 6,
   },
   editIcon: {
     position: "absolute",
@@ -785,7 +789,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: 'transparent',
   },
   modalContent: {
     width: "85%",
@@ -847,7 +851,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     color: "gray",
-    
+
   },
   datePickerButton: {
     padding: 8,
@@ -858,8 +862,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: '#333',
-    fontSize:24,
-    fontFamily:FONTFAMILY.dongle_regular,
+    fontSize: 24,
+    fontFamily: FONTFAMILY.dongle_regular,
   },
   updateButton: {
     marginTop: 20,
@@ -876,8 +880,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize:24,
-    fontFamily:FONTFAMILY.dongle_regular,
+    fontSize: 24,
+    fontFamily: FONTFAMILY.dongle_regular,
   },
   voucherItem: {
     flexDirection: "row", // Xếp key và status trên cùng một dòng
@@ -888,12 +892,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   voucherKey: {
-    fontSize:26,
-    fontFamily:FONTFAMILY.dongle_bold,
+    fontSize: 26,
+    fontFamily: FONTFAMILY.dongle_bold,
   },
   voucherStatus: {
-    fontSize:24,
-    fontFamily:FONTFAMILY.dongle_regular,
+    fontSize: 24,
+    fontFamily: FONTFAMILY.dongle_regular,
   },
   input: {
     width: "100%",
@@ -904,8 +908,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflow: "hidden",
     textAlign: "left",
-    fontSize:25,
-    fontFamily:FONTFAMILY.dongle_light,
+    fontSize: 25,
+    fontFamily: FONTFAMILY.dongle_light,
   },
   modalButton: {
     backgroundColor: "#e89f33",

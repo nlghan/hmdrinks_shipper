@@ -42,7 +42,7 @@ const Other = () => {
         <Text style={styles.title}>{t('information.other')}</Text>
 
         {/* Hỗ trợ */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('features.support')}</Text>
           <View style={styles.list}>
             <TouchableOpacity style={styles.listItem} onPress={() => setShowConfirmModal(true)}>
@@ -66,17 +66,17 @@ const Other = () => {
               <MaterialIcons name="arrow-forward-ios" style={styles.iconrow} size={18} />
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         {/* Tài khoản */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('user')}</Text>
+          {/* <Text style={styles.sectionTitle}>{t('user')}</Text> */}
           <View style={styles.list}>
-            <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('Info')}>
+            {/* <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('Info')}>
               <MaterialIcons name="person" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('personalInfo')}</Text>
               <MaterialIcons name="arrow-forward-ios" style={styles.iconrow} size={18} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('LanguageChange')}>
               <MaterialIcons name="settings" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('language')}</Text>
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     flexBasis: "100%",
   },
   list: {
+    marginTop: "5%",
     backgroundColor: "#fff",
     borderRadius: 8,
     overflow: "hidden",
