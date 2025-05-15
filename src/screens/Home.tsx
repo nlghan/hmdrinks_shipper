@@ -29,7 +29,7 @@ interface Shipment {
   phoneNumber: string;
   status: 'SUCCESS' | 'SHIPPING' | 'WAITING' | 'CANCELLED' | string;
   dateCreated: string;
-  // Thêm các thuộc tính khác nếu cần
+  isGroup?: boolean;
 }
 
 // Kiểu cho tham số API
@@ -67,36 +67,37 @@ const HomeShipper = () => {
     { status: 'CANCELLED', icon: 'cancel', title: 'Đơn hàng đã hủy' },
   ] as const;
 
-  const fetchData = async (page: number, status: string = selectedStatus) => {
+  const fetchData = async (page: number, status: string = selectedStatus, type: string = 'shipment') => {
     setLoading(true);
     setError(null);
 
     const token = await AsyncStorage.getItem('access_token');
     if (!token) {
-      setError("Vui lòng đăng nhập lại.");
+      setError('Vui lòng đăng nhập lại.');
       setLoading(false);
-      return;
+      return { data: [], totalPage: 1 };
     }
 
-    let url = `/shipment/shipper/listShippment`;
+    const baseUrl = type === 'shipment-group' ? '/shipment-group' : '/shipment';
+    let url = `${baseUrl}/shipper/listShippment`;
     const params: FetchParams = { page, limit, status };
 
     if (status !== 'WAITING') {
       if (!userId || !userId.userId) {
         setError('Không thể xác định UserId.');
         setLoading(false);
-        return;
+        return { data: [], totalPage: 1 };
       }
       params.userId = String(userId.userId);
     } else {
-      url = `/shipment/view/listByStatus`;
+      url = `${baseUrl}/view/listByStatus`;
     }
 
     try {
-      console.log("Fetching data from API with params:", params);
-      console.log("URL:", url);
-      console.log("Token:", token);
-      console.log("UserId:", userId);
+      console.log('Fetching data from API with params:', params);
+      console.log('URL:', url);
+      console.log('Token:', token);
+      console.log('UserId:', userId);
       const response = await axiosInstance.get(url, {
         params,
         headers: {
@@ -104,20 +105,67 @@ const HomeShipper = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       const { listShipment, totalPage } = response.data;
-      setData(listShipment || []);
+      const shipmentsWithType: Shipment[] = (listShipment || []).map((shipment: Shipment) => ({
+        ...shipment,
+        isGroup: type === 'shipment-group',
+      }));
+
+      console.log('listShipment:', listShipment);
+      console.log('shipmentsWithType:', shipmentsWithType);
+      console.log('totalPage:', totalPage);
+
+      setData(shipmentsWithType);
       setTotalPage(totalPage || 1);
       setCurrentPage(page);
       setLoading(false);
+
+      return { data: shipmentsWithType, totalPage: totalPage || 1 };
     } catch (err) {
+      console.error('Error in fetchData:', err);
+      setError('Không thể tải dữ liệu.');
+      setLoading(false);
+      return { data: [], totalPage: 1 };
+    }
+  };
+  const fetchAllData = async (page: number, status: string = selectedStatus) => {
+    setLoading(true);
+    setError(null);
+
+    const token = await AsyncStorage.getItem('access_token');
+    if (!token) {
+      setError('Vui lòng đăng nhập lại.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const shipmentResponse = await fetchData(page, status, 'shipment');
+      const groupResponse = await fetchData(page, status, 'shipment-group');
+      console.log('shipmentResponse:', shipmentResponse);
+      console.log('groupResponse:', groupResponse);
+
+      const combinedData = [
+        ...(shipmentResponse.data || []),
+        ...(groupResponse.data || []),
+      ];
+      console.log('combinedData:', combinedData);
+
+      setData(combinedData);
+      setTotalPage(Math.max(shipmentResponse.totalPage || 1, groupResponse.totalPage || 1));
+      setCurrentPage(page);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error in fetchAllData:', err);
       setError('Không thể tải dữ liệu.');
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
+    fetchAllData(currentPage, selectedStatus);
+  }, [currentPage, selectedStatus]);
 
   useEffect(() => {
     setFilteredData(data.filter((item) => item.status === selectedStatus));
@@ -126,7 +174,7 @@ const HomeShipper = () => {
   useFocusEffect(
     useCallback(() => {
       if (userId) {
-        fetchData(1); // Load lại dữ liệu mỗi khi quay lại Home
+        fetchAllData(1, selectedStatus); 
       }
     }, [userId, selectedStatus])
   );
@@ -162,10 +210,15 @@ const HomeShipper = () => {
           }
         }}
         style={[styles.card, { borderColor: color }]}>
-        <View style={[styles.headerBox, { backgroundColor: color }]}>
+        <View style={[styles.headerBox, { backgroundColor: color, flexDirection: 'row', alignItems: 'center' }]}>
           <Text style={styles.headerText}>
-            {t('order.orderCode')}: {shipment?.orderId || "N/A"}
+            {t('order.orderCode')}: {shipment?.orderId || 'N/A'}
           </Text>
+          {shipment?.isGroup && (
+            <Text style={[styles.headerText, { color: '#e91e63', fontWeight: 'bold', marginLeft: 8 }]}>
+              {t('grOrderTitle')}
+            </Text>
+          )}
         </View>
 
         <Text>{t('order.customer')}: {shipment.customerName}</Text>
@@ -216,7 +269,7 @@ const HomeShipper = () => {
       />
       <ScrollView contentContainerStyle={[styles.container, { paddingBottom: 100 }]}>
         <Notification message={notification.message} visible={notification.visible} onHide={() => setNotification({ ...notification, visible: false })} />
-        {userId && <NotificationPopup userId={Number(userId.userId)} onPress={() => fetchData(1)}/>}
+        {userId && <NotificationPopup userId={Number(userId.userId)} onPress={() => fetchData(1)} />}
         {/* Thanh icon */}
         <StatusBar
           selectedStatus={selectedStatus}
@@ -384,7 +437,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center',
   },
 
@@ -407,7 +460,7 @@ const styles = StyleSheet.create({
   statusButton: { padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 20 },
   activeStatus: { backgroundColor: '#FFA983' },
   statusText: { fontWeight: 'bold' },
-  pagination: { flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom:20 },
+  pagination: { flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: 20 },
   pageButton: { padding: 10, margin: 5, backgroundColor: '#eee', borderRadius: 10 },
   activePage: { backgroundColor: '#FFA983' },
   errorText: { color: 'red', textAlign: 'center', marginTop: 20 },

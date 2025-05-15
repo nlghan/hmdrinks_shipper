@@ -156,7 +156,6 @@ const ShipmentDetails = () => {
                 ? 'Please log in again.'
                 : 'Vui lòng đăng nhập lại.';
             setError(msg);
-            Alert.alert('Error', msg);
             return;
         }
 
@@ -165,7 +164,6 @@ const ShipmentDetails = () => {
                 ? 'Unable to identify UserId.'
                 : 'Không thể xác định UserId.';
             setError(msg);
-            Alert.alert('Error', msg);
             return;
         }
         setNote(''); // Reset ghi chú khi xác nhận trạng thái mới
