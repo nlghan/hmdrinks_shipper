@@ -75,6 +75,7 @@
         "requestList": "Danh sách đơn nghỉ phép",
         "all": "Tất cả",
         "id": "ID",
+        "start-end": "Thời gian",
         "reasonShot": "Lý do",
         "status": "Trạng thái",
         "noRequest": "Chưa có đơn nghỉ phép nào.",

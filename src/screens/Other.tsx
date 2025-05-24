@@ -72,11 +72,11 @@ const Other = () => {
         <View style={styles.section}>
           {/* <Text style={styles.sectionTitle}>{t('user')}</Text> */}
           <View style={styles.list}>
-            {/* <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('Info')}>
+            <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('Info')}>
               <MaterialIcons name="person" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('personalInfo')}</Text>
               <MaterialIcons name="arrow-forward-ios" style={styles.iconrow} size={18} />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('LanguageChange')}>
               <MaterialIcons name="settings" style={styles.icon} size={24} />
               <Text style={styles.textOther}>{t('language')}</Text>
