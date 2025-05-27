@@ -50,7 +50,7 @@ const TabNavigator = () => {
           headerShown: false
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Info"
         component={Info}
         options={{
@@ -58,7 +58,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ color }) => <Icon name="person" size={28} color={color} />,
           headerShown: false
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Other"
         component={Other}

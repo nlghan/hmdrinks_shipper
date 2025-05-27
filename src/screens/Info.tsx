@@ -530,6 +530,9 @@ const Info: React.FC = () => {
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.card}>
+          <TouchableOpacity style={styles.backIcon} onPress={() => navigation.navigate('Main')}>
+            <Icon name="arrow-back" size={20} color="#FF9800" />
+          </TouchableOpacity>
           <Modal visible={isModalVisibleV} animationType="fade" transparent={true}>
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>

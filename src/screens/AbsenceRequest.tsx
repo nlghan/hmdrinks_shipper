@@ -264,28 +264,28 @@ const AbsenceRequest = () => {
         return acc;
     }, {});
 
-    absenceRequests.forEach((request) => {
-        const start = parseISO(request.startDate);
-        const end = parseISO(request.endDate);
-        let currentDate = start;
-        while (currentDate <= end) {
-            const formattedDate = format(currentDate, 'yyyy-MM-dd');
-            if (formattedDate !== today) {
-                markedDates[formattedDate] = {
-                    customStyles: {
-                        container: {
-                            backgroundColor:
-                                request.status === 'WAITING' ? '#fff48454' :
-                                    request.status === 'APPROVED' ? '#84beff54' :
-                                        '#ff918454',
-                        },
-                        text: { color: '#000', fontSize: 14 },
-                    },
-                };
-            }
-            currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
-        }
-    });
+    // absenceRequests.forEach((request) => {
+    //     const start = parseISO(request.startDate);
+    //     const end = parseISO(request.endDate);
+    //     let currentDate = start;
+    //     while (currentDate <= end) {
+    //         const formattedDate = format(currentDate, 'yyyy-MM-dd');
+    //         if (formattedDate !== today) {
+    //             markedDates[formattedDate] = {
+    //                 customStyles: {
+    //                     container: {
+    //                         backgroundColor:
+    //                             request.status === 'WAITING' ? '#fff48454' :
+    //                                 request.status === 'APPROVED' ? '#84beff54' :
+    //                                     '#ff918454',
+    //                     },
+    //                     text: { color: '#000', fontSize: 14 },
+    //                 },
+    //             };
+    //         }
+    //         currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+    //     }
+    // });
 
     if (markedDates[today]) {
         markedDates[today].marked = true;
@@ -411,7 +411,7 @@ const AbsenceRequest = () => {
                             <View style={[styles.legendColor, { backgroundColor: '#9b59b6' }]} />
                             <Text style={styles.legendText}>{t('absence.onLeave')}</Text>
                         </View>
-                        <View style={styles.legendItem}>
+                        {/* <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#fff48454' }]} />
                             <Text style={styles.legendText}>{t('absence.waiting')}</Text>
                         </View>
@@ -422,7 +422,7 @@ const AbsenceRequest = () => {
                         <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#ff918454' }]} />
                             <Text style={styles.legendText}>{t('absence.rejected')}</Text>
-                        </View>
+                        </View> */}
                         <View style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: '#e6eaed' }]} />
                             <Text style={styles.legendText}>{t('absence.notWorking')}</Text>
@@ -558,10 +558,10 @@ const AbsenceRequest = () => {
                     {absenceRequests.length > 0 ? (
                         <View style={styles.table}>
                             <View style={[styles.tableRow, styles.tableHeader]}>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.6 }]}>{t('absense.id')}</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.reasonShot')}</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.start-end')}</Text>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absense.status')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.6 }]}>{t('absence.id')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.reasonShot')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.start-end')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.status')}</Text>
                             </View>
                             {absenceRequests.map((request, index) => (
                                 <View key={request.requestId} style={styles.tableRow}>

@@ -11,6 +11,7 @@
     "contact1": "Liên hệ",
     "login": "Đăng Nhập",
     "signUp": "Đăng Ký",
+    "grOrderTitle": "- ĐƠN HÀNG NHÓM",
     "ana": {
         "orderNumber": "Số đơn hàng",
         "orders": "đơn",
@@ -74,6 +75,7 @@
         "requestList": "Danh sách đơn nghỉ phép",
         "all": "Tất cả",
         "id": "ID",
+        "start-end": "Thời gian",
         "reasonShot": "Lý do",
         "status": "Trạng thái",
         "noRequest": "Chưa có đơn nghỉ phép nào.",
