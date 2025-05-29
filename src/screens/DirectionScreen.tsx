@@ -147,7 +147,7 @@ const DirectionScreen = () => {
             setHtmlContent(cleanHtml);
             setSteps(listStepDetail || []);
         } catch (err) {
-            console.error('Lỗi khi lấy dữ liệu bản đồ:', err);
+            console.log('Lỗi khi lấy dữ liệu bản đồ:', err);
             setError('Không thể tải lộ trình.');
         } finally {
             setLoading(false);

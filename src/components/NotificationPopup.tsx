@@ -2,6 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Modal, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import useWebSocket from '../utils/Socket';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigation/RootStackParamList';
+import { useShipperStore } from "../store/store";
 
 type NotificationWS = {
     userId: number;
@@ -15,17 +19,44 @@ interface NotificationPopupProps {
     onPress: () => void; // Thêm hàm onPress
 }
 
+const getTranslatedMessage = (message: string, language: string) => {
+    if (language !== 'EN') return message;
+
+    if (message === 'Tài khoản của bạn đã đăng nhập ở nơi khác') {
+        return 'Your account has been logged in from another device';
+    }
+
+    if (message === 'Bạn có đơn mới') {
+        return 'You have a new order';
+    }
+
+    if (message === 'Bạn có nhóm đơn mới') {
+        return 'You have a new order group';
+    }
+
+    if (message === 'Bạn có đơn hàng mới cần giao') {
+        return 'You have a new delivery order';
+    }
+
+    if (message === 'Bạn có nhóm đơn hàng mới cần giao') {
+        return 'You have a new delivery order group';
+    }
+
+    return message;
+};
+
 const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId, onPress }) => {
     const socketNotifications = useWebSocket(userId);
     const [notifications, setNotifications] = useState<NotificationWS[]>([]);
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const [modalVisible, setModalVisible] = useState(false);
     const { t } = useTranslation();
+    const { language } = useShipperStore();
+    const logout = useShipperStore((state) => state.logout);
     const isModalOpen = useRef(false);
     const lastNotificationTime = useRef<number | null>(null);
 
     useEffect(() => {
-        console.log("123mymymy123mymymy: ", userId)
-        console.log('🔔 socketNotificationsssssssssssss:', socketNotifications.length);
         if (socketNotifications.length === 0) return;
 
         const newNotification = socketNotifications[socketNotifications.length - 1];
@@ -33,7 +64,7 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId, onPress }
 
         // 🔹 Chỉ thêm thông báo mới nếu chưa hiển thị
         if (
-            lastNotificationTime.current !== newNotificationTime && 
+            lastNotificationTime.current !== newNotificationTime &&
             !notifications.some(noti => Number(noti.time) === newNotificationTime)
         ) {
             lastNotificationTime.current = newNotificationTime;
@@ -47,11 +78,27 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId, onPress }
         }
         console.log('🔔 socketNotifications:', socketNotifications);
 
-    }, [socketNotifications.length]);
+    }, [socketNotifications]);
+
+    const handleLogout = () => {
+        logout();
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
+    };
 
     const closeModal = () => {
         setModalVisible(false);
-        isModalOpen.current = false; 
+        isModalOpen.current = false;
+
+        const hasConflictLogin = notifications.some(
+            n => n.message === 'Tài khoản của bạn đã đăng nhập ở nơi khác'
+        );
+
+        if (hasConflictLogin) {
+            handleLogout();
+        }
     };
 
     return (
@@ -64,26 +111,19 @@ const NotificationPopup: React.FC<NotificationPopupProps> = ({ userId, onPress }
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.title}>{t('common.noti')}</Text>                        
+                        <Text style={styles.title}>{t('common.noti')}</Text>
                         <FlatList
                             data={notifications}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <View style={styles.notificationItem}>
-                                    <Text style={styles.message}>{item.message}</Text>
+                                    <Text style={styles.message}>{getTranslatedMessage(item.message, language)}</Text>
                                     {/* <Text style={styles.time}>{item.time}</Text>                                     */}
                                 </View>
                             )}
                         />
-                        <TouchableOpacity
-                            style={styles.closeButton}
-                            onPress={() => {
-                                setModalVisible(false);
-                                isModalOpen.current = false;
-                                onPress()
-                            }}
-                        >
-                            <Text style={styles.closeButtonText}>Đóng</Text>
+                        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                            <Text style={styles.closeButtonText}>{t('close')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

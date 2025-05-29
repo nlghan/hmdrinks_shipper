@@ -61,10 +61,10 @@ const HomeShipper = () => {
     CANCELLED: '#b3796f',
   };
   const statusConfig = [
-    { status: 'WAITING', icon: 'hourglass-empty', title: 'Đơn hàng chờ giao' },
-    { status: 'SHIPPING', icon: 'local-shipping', title: 'Đơn hàng được phân công' },
-    { status: 'SUCCESS', icon: 'check-circle', title: 'Đơn hàng thành công' },
-    { status: 'CANCELLED', icon: 'cancel', title: 'Đơn hàng đã hủy' },
+    { status: 'WAITING', icon: 'hourglass-empty', title: t('shipper.needShip') },
+    { status: 'SHIPPING', icon: 'local-shipping', title: t('shipper.waitShip') },
+    { status: 'SUCCESS', icon: 'check-circle', title: t('shipper.successShip') },
+    { status: 'CANCELLED', icon: 'cancel', title: t('shipper.cancelShip') },
   ] as const;
 
   const fetchData = async (page: number, status: string = selectedStatus, type: string = 'shipment') => {
@@ -174,7 +174,7 @@ const HomeShipper = () => {
   useFocusEffect(
     useCallback(() => {
       if (userId) {
-        fetchAllData(1, selectedStatus); 
+        fetchAllData(1, selectedStatus);
       }
     }, [userId, selectedStatus])
   );
@@ -221,17 +221,18 @@ const HomeShipper = () => {
           )}
         </View>
 
-        <Text>{t('order.customer')}: {shipment.customerName}</Text>
-        <Text>{t('address')}: {shipment.address}</Text>
-        <Text>{t('phone')}: {shipment.phoneNumber}</Text>
-        <Text>{t('shipmentStatus')}: {shipment.status}</Text>
-        <Text>{t('order.receiveDate')}: {shipment.dateCreated}</Text>
+        <Text style={styles.shipmentText}>{t('order.customer')}: {shipment.customerName}</Text>
+        <Text style={styles.shipmentText}>{t('address')}: {shipment.address}</Text>
+        <Text style={styles.shipmentText}>{t('phone')}: {shipment.phoneNumber}</Text>
+        <Text style={styles.shipmentText}>{t('shipmentStatus')}: {shipment.status}</Text>
+        <Text style={styles.shipmentText}>{t('order.receiveDate')}: {shipment.dateCreated}</Text>
 
         <View style={styles.buttonRow}>
           <Button
             mode="contained"
             style={[styles.containedButton, { backgroundColor: color }]}
             textColor="#fff"
+            labelStyle={{ fontFamily: FONTFAMILY.lobster_regular}}
             onPress={() => navigation.navigate('ChatWithUser', { shipmentId: Number(shipment?.shipmentId) })}
           >
             {t('chat.title')}
@@ -240,6 +241,7 @@ const HomeShipper = () => {
             mode="outlined"
             style={[styles.outlinedButton, { borderColor: color }]}
             textColor={color}
+            labelStyle={{ fontFamily: FONTFAMILY.lobster_regular}}
             onPress={() => handleMapDirection(shipment.shipmentId, shipment.status)}
           >
             {t('route')}
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     marginTop: 10,
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: FONTFAMILY.lobster_regular,
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -436,9 +438,14 @@ const styles = StyleSheet.create({
 
   headerText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: FONTFAMILY.lobster_regular,
     fontSize: 15,
     textAlign: 'center',
+  },
+  shipmentText: {
+    fontFamily: FONTFAMILY.dongle_light,
+    fontSize: 22,
+    lineHeight: 26,
   },
 
   buttonRow: {

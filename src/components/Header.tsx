@@ -43,7 +43,7 @@ const Header = ({ style }: { style?: object }) => {
             setNotifications(data);
             setUnreadCount(data?.filter((noti) => !noti.isRead).length);
         } catch (error) {
-            console.error("Lỗi khi lấy danh sách thông báo:", error);
+            console.log("Lỗi khi lấy danh sách thông báo:", error);
         }
     };
 

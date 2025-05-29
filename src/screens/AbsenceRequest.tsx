@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FONTFAMILY } from '../theme/theme';
 import axiosInstance from "../utils/axiosInstance";
 import { Calendar } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
@@ -390,6 +391,7 @@ const AbsenceRequest = () => {
                             textDayFontSize: 16,
                             textMonthFontSize: 18,
                             textDayHeaderFontSize: 14,
+                            textDayHeaderFontFamily: FONTFAMILY.lobster_regular,
                         }}
                     />
 
@@ -431,15 +433,27 @@ const AbsenceRequest = () => {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitleCheck}>{t('absence.checkIn')}</Text>
-                    <LinearGradient
-                        colors={['#36a0d9', '#63b9ff']}
-                        style={styles.checkInButton}
-                    >
-                        <TouchableOpacity onPress={handleCheckIn} style={styles.checkInButtonInner}>
-                            <Icon name="access-time" size={24} color="#fff" style={styles.buttonIcon} />
-                            <Text style={styles.buttonTextCheck}>{t('absence.checkIn')}</Text>
-                        </TouchableOpacity>
-                    </LinearGradient>
+                    <View style={styles.boxButton}>
+                        <LinearGradient
+                            colors={['#36a0d9', '#63b9ff']}
+                            style={styles.checkInButton}
+                        >
+                            <TouchableOpacity onPress={handleCheckIn} style={styles.checkInButtonInner}>
+                                <Icon name="access-time" size={24} color="#fff" style={styles.buttonIcon} />
+                                <Text style={styles.buttonTextCheck}>{t('absence.checkIn')}</Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+                        <LinearGradient
+                            colors={['#3BBB7E', '#40E395']}
+                            style={styles.checkInButton}
+                        >
+                            <TouchableOpacity style={styles.checkInButtonInner} onPress={handleUpdateNote}>
+                                <Icon name="update" size={24} color="#fff" style={styles.buttonIcon} />
+                                <Text style={styles.buttonTextCheck}>{t('absence.updateNote')}</Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+
+                    </View>
                     <View style={styles.inputContainer}>
                         <Icon name="edit" size={20} color="#666" style={styles.inputIcon} />
                         <TextInput
@@ -450,10 +464,7 @@ const AbsenceRequest = () => {
                             onChangeText={setCheckInNote}
                         />
                     </View>
-                    <TouchableOpacity style={styles.updateButton} onPress={handleUpdateNote}>
-                        <Icon name="update" size={20} color="#fff" style={styles.buttonIcon} />
-                        <Text style={styles.buttonTextCheck}>{t('absence.updateNote')}</Text>
-                    </TouchableOpacity>
+
                 </View>
 
                 {/* Form xin nghỉ phép */}
@@ -479,8 +490,8 @@ const AbsenceRequest = () => {
                                         onPress={() => setShowStartDatePicker(true)}
                                         style={styles.dateInput}
                                     >
-                                        <Text>
-                                            {startDate ? format(startDate, 'dd-MM-yyyy') : 'Chọn ngày'}
+                                        <Text style={styles.userInfoText1}>
+                                            {startDate ? format(startDate, 'dd-MM-yyyy') : t('absence.chooseDay')}
                                         </Text>
                                     </TouchableOpacity>
                                     {showStartDatePicker && (
@@ -499,8 +510,8 @@ const AbsenceRequest = () => {
                                         onPress={() => setShowEndDatePicker(true)}
                                         style={styles.dateInput}
                                     >
-                                        <Text>
-                                            {endDate ? format(endDate, 'dd-MM-yyyy') : 'Chọn ngày'}
+                                        <Text style={styles.userInfoText1}>
+                                            {endDate ? format(endDate, 'dd-MM-yyyy') : t('absence.chooseDay')}
                                         </Text>
                                     </TouchableOpacity>
                                     {showEndDatePicker && (
@@ -558,7 +569,7 @@ const AbsenceRequest = () => {
                     {absenceRequests.length > 0 ? (
                         <View style={styles.table}>
                             <View style={[styles.tableRow, styles.tableHeader]}>
-                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.6 }]}>{t('absence.id')}</Text>
+                                <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 0.5 }]}>{t('absence.id')}</Text>
                                 <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.reasonShot')}</Text>
                                 <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.start-end')}</Text>
                                 <Text style={[styles.tableCell, styles.tableHeaderCell]}>{t('absence.status')}</Text>
@@ -617,12 +628,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         textAlign: 'center',
+        fontFamily: FONTFAMILY.lobster_regular,
     },
-        sectionTitle1: {
+    sectionTitle1: {
         fontSize: 20,
         fontWeight: '600',
         textAlign: 'center',
         marginBottom: 10,
+        fontFamily: FONTFAMILY.lobster_regular,
     },
     sectionTitleCheck: {
         fontSize: 20,
@@ -630,26 +643,36 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 16,
         textAlign: 'center',
+        fontFamily: FONTFAMILY.lobster_regular,
+    },
+    boxButton: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     checkInButton: {
         borderRadius: 12,
         marginBottom: 12,
         overflow: 'hidden', // Đảm bảo gradient không tràn ra ngoài
+        height: 50,
+        width: '49%',
     },
     checkInButtonInner: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 14,
+        paddingVertical: 10,
     },
     buttonIcon: {
         marginRight: 8,
     },
     buttonTextCheck: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 24,
         fontWeight: '600',
         letterSpacing: 0.5,
+        fontFamily: FONTFAMILY.dongle_light,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -667,8 +690,9 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 12,
         paddingHorizontal: 8,
-        fontSize: 16,
+        fontSize: 22,
         color: '#333',
+        fontFamily: FONTFAMILY.dongle_light,
     },
     updateButton: {
         flexDirection: 'row',
@@ -705,15 +729,22 @@ const styles = StyleSheet.create({
     },
 
     legendText: {
-        fontSize: 14,
+        fontSize: 22,
         color: '#34495e',
+        fontFamily: FONTFAMILY.dongle_light,
+        fontWeight: '500',
     },
     userInfo: {
         marginBottom: 16,
     },
     userInfoText: {
-        fontSize: 14,
+        fontSize: 24,
         marginBottom: 4,
+        fontFamily: FONTFAMILY.dongle_regular,
+    },
+    userInfoText1: {
+        fontSize: 22,
+        fontFamily: FONTFAMILY.dongle_light,
     },
     bold: {
         fontWeight: '600',
@@ -727,9 +758,10 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     label: {
-        fontSize: 14,
+        fontSize: 24,
         fontWeight: '500',
         marginBottom: 4,
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     dateInput: {
         borderWidth: 1,
@@ -745,6 +777,8 @@ const styles = StyleSheet.create({
         padding: 8,
         height: 80,
         textAlignVertical: 'top',
+        fontFamily: FONTFAMILY.dongle_light,
+        fontSize: 22,
     },
     error: {
         color: 'red',
@@ -766,7 +800,8 @@ const styles = StyleSheet.create({
     submitButtonText: {
         color: '#fff',
         fontWeight: '600',
-        fontSize: 16,
+        fontSize: 24,
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     listHeader: {
         flexDirection: 'row',
@@ -784,7 +819,7 @@ const styles = StyleSheet.create({
     },
     select: {
         width: '100%',
-        color: '#333',        
+        color: '#333',
         paddingHorizontal: 12,
         fontSize: 12,
     },
@@ -803,12 +838,14 @@ const styles = StyleSheet.create({
         borderColor: '#eee',
         paddingVertical: 8,
         paddingHorizontal: 2,
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     tableCell: {
         flex: 1,
         paddingHorizontal: 2,
-        fontSize: 12,
+        fontSize: 20,
         color: '#333',
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     tableHeaderCell: {
         fontWeight: 'bold',
@@ -817,15 +854,15 @@ const styles = StyleSheet.create({
     },
     'status-waiting': {
         color: '#f39c12',
-        fontWeight: 'bold',
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     'status-approved': {
         color: '#27ae60',
-        fontWeight: 'bold',
+        fontFamily: FONTFAMILY.dongle_regular,
     },
     'status-rejected': {
         color: '#c0392b',
-        fontWeight: 'bold',
+        fontFamily: FONTFAMILY.dongle_regular,
     },
 });
 

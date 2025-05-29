@@ -15,14 +15,17 @@ import LinearGradient from 'react-native-linear-gradient';
 import MonthYearPicker from '../components/MonthYearPicker';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { ActivityIndicator } from 'react-native';
+import { AxiosError } from 'axios';
 
-
+interface ApiErrorResponse {
+  message: string;
+}
 type Month = '01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | '10' | '11' | '12';
 
 type MonthData = Record<Month, number | ((year: number) => number)>;
 
-const monthData: Record<'vi', MonthData> = {
-  vi: {
+const monthData: Record<'VN' | 'EN', MonthData> = {
+  VN: {
     '01': 31,
     '02': (year: number) => (year % 4 === 0 ? 29 : 28),
     '03': 31,
@@ -34,14 +37,29 @@ const monthData: Record<'vi', MonthData> = {
     '09': 30,
     '10': 31,
     '11': 30,
-    '12': 31
-  }
+    '12': 31,
+  },
+  EN: {
+    '01': 31,
+    '02': (year: number) => (year % 4 === 0 ? 29 : 28),
+    '03': 31,
+    '04': 30,
+    '05': 31,
+    '06': 30,
+    '07': 31,
+    '08': 31,
+    '09': 30,
+    '10': 31,
+    '11': 30,
+    '12': 31,
+  },
 };
+
 
 const radius = 85;
 const innerRadius = 40;
 
-const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
+const Analytics = ({ month = '04', year = 2025 }) => {
   const { t } = useTranslation();
   const [successfulShipments, setSuccessfulShipments] = useState<number[]>([]);
   const [paymentAmounts, setPaymentAmounts] = useState<number[]>([]);
@@ -53,6 +71,7 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading1, setIsLoading1] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const { language } = useShipperStore();
   const [selectedBarInfo, setSelectedBarInfo] = useState<{
     date: string;
     orders: number;
@@ -133,8 +152,8 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
       setPercentages(percentArray);
       console.log('Counts:', typeof counts);
       console.log('Percentages:', percentArray);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.log(err);
     } finally {
       setIsLoading(false);
     }
@@ -145,10 +164,11 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
       setIsLoading1(true);
       const token = await AsyncStorage.getItem("access_token");
       if (!token) return;
-      const lang = language as 'vi';
       const m = month as Month;
+      console.log('Fetching shipments for:', { month, year, language, m });
+      console.log('Month Data:', monthData[language][m]);
 
-      const value = monthData[lang][m];
+      const value = monthData[language][m];
       const daysInMonth = typeof value === 'function' ? value(year) : value;
 
       const shipmentCounts = Array(daysInMonth).fill(0);
@@ -193,7 +213,12 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
       console.log('Combined Chart Data:', combinedChartData);
 
     } catch (err) {
-      console.error(err);
+      if (err instanceof Error) {
+        console.log('Error in fetchShipments:', err.message);
+        console.log('Stack:', err.stack);
+      } else {
+        console.log('Unknown error in fetchShipments:', err);
+      }
     } finally {
       setIsLoading1(false);
     }
@@ -210,8 +235,13 @@ const Analytics = ({ month = '04', year = 2025, language = 'vi' }) => {
         paymentAmounts[dayIndex] += res.data.amount;
       }
       console.log(`Payment ID ${paymentId}:`, res.data.amount);
-    } catch (error) {
-      console.error(`Lỗi với paymentId ${paymentId}:`, error);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log(`Error with paymentId ${paymentId}:`, err.message);
+        console.log('Stack:', err.stack);
+      } else {
+        console.log(`Unknown error with paymentId ${paymentId}:`, err);
+      }
     }
   };
 
