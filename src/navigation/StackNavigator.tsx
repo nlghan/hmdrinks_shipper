@@ -14,6 +14,8 @@ import DirectionScreen from '../screens/DirectionScreen';
 import ForgotPassword from '../screens/ForgotPassword';
 import Analytics from '../screens/Analytics';
 import AbsenceRequest from '../screens/AbsenceRequest';
+import DirectionGroupScreen from '../screens/DirectionGroupScreen';
+import ShipmentGroupDetails from '../screens/ShipmentGroupDetails';
 
 // ✅ Định nghĩa kiểu cho danh sách các màn hình
 export type RootStackParamList = {
@@ -30,6 +32,8 @@ export type RootStackParamList = {
   DirectionScreen: { shipmentId: number, status: string };
   ForgotPassword: undefined;
   AbsenceRequest: undefined;
+  DirectionGroupScreen: { shipmentId: number, status:string };
+  ShipmentGroupDetails: { shipmentId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,9 +59,11 @@ const StackNavigator = () => {
       <Stack.Screen name="Other" component={Other} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="LanguageChange" component={LanguageChange} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
+      <Stack.Screen name="ShipmentGroupDetails" component={ShipmentGroupDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ChatWithUser" component={ChatWithUser} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="DirectionScreen" component={DirectionScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
+      <Stack.Screen name="DirectionGroupScreen" component={DirectionGroupScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false, animation:'slide_from_right' }} />
       <Stack.Screen name="Analytics" component={Analytics} options={{ headerShown: false, animation:'slide_from_right' }} />
       <Stack.Screen name="AbsenceRequest" component={AbsenceRequest} options={{ headerShown: false, animation:'slide_from_right' }} />
