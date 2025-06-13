@@ -26,7 +26,7 @@
         "cancel": "Đã hủy",
         "success": "Thành công",
         "noData": "Tháng này không có đơn hàng thành công!",
-        "loading" : "Đang tải dữ liệu..."
+        "loading": "Đang tải dữ liệu..."
     },
     "history": {
         "history": "Lịch sử đặt hàng",
@@ -80,7 +80,8 @@
         "reasonShot": "Lý do",
         "status": "Trạng thái",
         "noRequest": "Chưa có đơn nghỉ phép nào.",
-        "loading": "Đang tải thông tin người dùng..."
+        "loading": "Đang tải thông tin người dùng...",
+        "chooseDay": "Chọn ngày"
     },
     "favourite": {
         "title": "Yêu thích",
@@ -141,7 +142,13 @@
     "reqOTP": "Vui lòng nhập mã OTP đã gửi đến email của bạn.",
     "reqMail": "Vui lòng nhập lại email của bạn. Chúng tôi sẽ gửi mã xác nhận thông qua email này.",
     "enterMail": "Nhập địa chỉ email của bạn",
+    "enterMail1": "Vui lòng nhập địa chỉ email của bạn",
     "enterOTP": "Nhập mã OTP",
+    "confirmOTP": "Xác nhận mã OTP",
+    "sendOTP": "Gửi OTP",
+    "successOTP": "Xác thực mã OTP thành công." ,
+    "checkMail1": "Vui lòng kiểm tra email của bạn để nhận mã OTP.",
+    "backLogin": "Quay lại trang đăng nhập",
     "checkMail": "Nếu không nhận được mã xác nhận, hãy kiểm tra trong thư rác hoặc ấn “Gửi” để nhận lại mã.",
     "about.title": "Câu chuyện kinh doanh",
     "about.description1": "Tại HMDrinks, chúng mình mang đến cho bạn những loại trà trái cây, trà hoa quả và trà sữa đặc biệt, mỗi sản phẩm đều chứa đựng hương vị tự nhiên và tươi mới.",
@@ -482,11 +489,10 @@
         "chooseLanguage": "Chọn ngôn ngữ",
         "listComment": "Tất cả đánh giá",
         "addCmt": "Thêm đánh giá",
-        "editCmt":"Chỉnh sửa đánh giá",
-        "confirmDelete":"Xóa đánh giá",
-        "areYouSure":"Bạn chắn chắn muốn xóa đánh giá này?",
+        "editCmt": "Chỉnh sửa đánh giá",
+        "confirmDelete": "Xóa đánh giá",
+        "areYouSure": "Bạn chắn chắn muốn xóa đánh giá này?",
         "route": "Chi tiết lộ trình"
-      
     },
     "productContent": {
         "page": "Trang",
@@ -610,6 +616,9 @@
         "title2": "THỐNG KÊ",
         "hello": "Xin chào",
         "needShip": "Đơn hàng được phân công",
+        "waitShip": "Đơn hàng đang chờ giao",
+        "successShip": "Đơn hàng thành công",
+        "cancelShip": "Đơn hàng đã hủy",
         "chart": "Biểu đồ đơn hàng trong tháng"
     },
     "android": {
@@ -617,7 +626,7 @@
             "title": "Giao hàng tận nơi",
             "product": "Sản phẩm đã chọn"
         },
-        "suggest":"Gợi ý tìm kiếm"
+        "suggest": "Gợi ý tìm kiếm"
     },
     "chat": {
         "title": "Liên hệ",

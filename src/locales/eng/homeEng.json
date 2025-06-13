@@ -76,7 +76,8 @@
     "id": "ID",
     "status": "Status",
     "noRequest": "No leave requests yet.",
-    "loading": "Loading user information..."
+    "loading": "Loading user information...",
+    "chooseDay": "Choose a day"
   },
   "login": "Login",
   "signUp": "Sign Up",
@@ -137,8 +138,14 @@
   "createAcc": "Create a new account",
   "haveAcc": "Already have an account?",
   "reqOTP": "Please enter the OTP code sent to your email.",
+  "confirmOTP": "Confirm OTP",
+  "sendOTP": "Send OTP",
+  "successOTP": "OTP code verification successful.",
+  "backLogin": "Back to login",
+  "checkMail1": "Please check your email to receive the OTP code.",
   "reqMail": "Please re-enter your email. We will send a confirmation code via this email.",
   "enterMail": "Enter your email",
+  "enterMail1": "Please enter your email",
   "enterOTP": "Enter OTP code",
   "checkMail": "If you do not receive the confirmation code, please check your spam email or press “Send” to receive the code again.",
   "about.title": "The Business Story",
@@ -221,7 +228,7 @@
   "updateBtn": "Update",
   "backBtn": "Back",
   "order": {
-    "enterNote": "Enter your note here...", 
+    "enterNote": "Enter your note here...",
     "currentNote": "Note:",
     "reasonRequired": "Please select a reason.",
     "title": "My orders",
@@ -606,7 +613,10 @@
     "title1": "ORDERS",
     "title2": "ANALYTICS",
     "hello": "Hello",
-    "needShip": "Assigned orders",
+    "needShip": "Order assigned" ,
+    "waitShip": "Orders awaiting delivery",
+    "successShip": "Orders successful",
+    "cancelShip": "Orders cancelled",
     "chart": "Monthly order chart"
   },
   "android": {

@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, Alert, Animated, Easing } from 'react-native';
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useShipperStore } from '../store/store';
 
 type NavigationProps = {
     navigate: (screen: string) => void;
@@ -14,6 +16,8 @@ const ForgotPassword: React.FC = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const navigation = useNavigation<NavigationProps>();
+    const { t } = useTranslation();
+    const { language } = useShipperStore();
 
     const handleSubmitChange = async () => {
         if (!isOtpSent) {
@@ -28,17 +32,17 @@ const ForgotPassword: React.FC = () => {
                             'accept': '*/*'
                         }
                     });
-                    setMessage(response.data.message || "Vui lòng kiểm tra email của bạn để nhận mã OTP.");
+                    setMessage(response.data.message || t('checkMail1'));
                     setError('');
                     setIsOtpSent(true);
                 } catch (err: any) {
-                    setError(err.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
+                    setError(err.response?.data?.message || t('cart.generalError'));
                     setMessage('');
                 } finally {
                     setIsLoading(false);
                 }
             } else {
-                setError("Vui lòng nhập địa chỉ email của bạn.");
+                setError(t('enterMail1'));
             }
         } else {
             if (otp) {
@@ -53,14 +57,14 @@ const ForgotPassword: React.FC = () => {
                             'accept': '*/*'
                         }
                     });
-                    setMessage(response.data.message || "Xác thực mã OTP thành công.");
+                    setMessage(response.data.message || t('successOTP'));
                     setError('');
                     setTimeout(() => {
                         setIsLoading(false);
                         navigation.navigate('Login');
                     }, 2000);
                 } catch (err: any) {
-                    setError(err.response?.data?.message || "Đã xảy ra lỗi khi xác thực OTP. Vui lòng thử lại.");
+                    setError(err.response?.data?.message || t('cart.generalError'));
                     setMessage('');
                 } finally {
                     setIsLoading(false);
@@ -122,10 +126,10 @@ const ForgotPassword: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Quên Mật Khẩu</Text>
+            <Text style={styles.title}>{t('forget')}</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Nhập email của bạn"
+                placeholder={t('enterMail')}
                 placeholderTextColor="#FF7F50"
                 value={email}
                 onChangeText={setEmail}
@@ -135,7 +139,7 @@ const ForgotPassword: React.FC = () => {
             {isOtpSent && (
                 <TextInput
                     style={styles.input}
-                    placeholder="Nhập mã OTP"
+                    placeholder={t('enterOTP')}
                     placeholderTextColor="#FF7F50"
                     value={otp}
                     onChangeText={setOtp}
@@ -145,10 +149,10 @@ const ForgotPassword: React.FC = () => {
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
             {message ? <Text style={styles.successText}>{message}</Text> : null}
             <TouchableOpacity style={styles.loginButton} onPress={handleSubmitChange} disabled={isLoading}>
-                {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.loginText}>{isOtpSent ? "Xác nhận OTP" : "Gửi OTP"}</Text>}
+                {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.loginText}>{isOtpSent ? t('confirmOTP') : t('sendOTP')}</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton1} onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginText1}>Quay lại trang đăng nhập.</Text>            
+                <Text style={styles.loginText1}>{t('backLogin')}</Text>            
             </TouchableOpacity>
             {/* Họa tiết động */}
             <Animated.View

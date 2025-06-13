@@ -308,17 +308,18 @@ const HomeShipper = () => {
           )}
         </View>
 
-        <Text>{t('order.customer')}: {shipment.customerName}</Text>
-        <Text>{t('address')}: {shipment.address}</Text>
-        <Text>{t('phone')}: {shipment.phoneNumber}</Text>
-        <Text>{t('shipmentStatus')}: {shipment.status}</Text>
-        <Text>{t('order.receiveDate')}: {shipment.dateCreated}</Text>
+        <Text style={styles.shipmentText}>{t('order.customer')}: {shipment.customerName}</Text>
+        <Text style={styles.shipmentText}>{t('address')}: {shipment.address}</Text>
+        <Text style={styles.shipmentText}>{t('phone')}: {shipment.phoneNumber}</Text>
+        <Text style={styles.shipmentText}>{t('shipmentStatus')}: {shipment.status}</Text>
+        <Text style={styles.shipmentText}>{t('order.receiveDate')}: {shipment.dateCreated}</Text>
 
         <View style={styles.buttonRow}>
           <Button
             mode="contained"
             style={[styles.containedButton, { backgroundColor: color }]}
             textColor="#fff"
+            labelStyle={{ fontFamily: FONTFAMILY.lobster_regular}}
             onPress={() => navigation.navigate('ChatWithUser', { shipmentId: Number(shipment?.shipmentId) })}
           >
             {t('chat.title')}
@@ -500,7 +501,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     marginTop: 10,
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: FONTFAMILY.lobster_regular,
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -528,9 +529,14 @@ const styles = StyleSheet.create({
 
   headerText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: FONTFAMILY.lobster_regular,
     fontSize: 15,
     textAlign: 'center',
+  },
+  shipmentText: {
+    fontFamily: FONTFAMILY.dongle_light,
+    fontSize: 22,
+    lineHeight: 26,
   },
 
   buttonRow: {

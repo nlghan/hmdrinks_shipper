@@ -28,7 +28,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, message,
             </View>
 
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>Đóng</Text>
+              <Text style={styles.closeButtonText}>{t('close')}</Text>
             </TouchableOpacity>
           </View>
         </View>

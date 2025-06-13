@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { Image } from "react-native";
 import { FONTFAMILY } from "../theme/theme";
+import { useShipperStore } from "../store/store";
 
 
 
@@ -30,6 +31,31 @@ interface Notification {
   isRead: boolean;
   shipmentId: number;
 }
+const getTranslatedMessage = (message: string, language: string) => {
+  if (language !== 'EN') return message;
+
+  if (message === 'Tài khoản của bạn đã đăng nhập ở nơi khác') {
+    return 'Your account has been logged in from another device';
+  }
+
+  if (message === 'Bạn có đơn mới') {
+    return 'You have a new order';
+  }
+
+  if (message === 'Bạn có nhóm đơn mới') {
+    return 'You have a new order group';
+  }
+
+  if (message === 'Bạn có đơn hàng mới cần giao') {
+    return 'You have a new delivery order';
+  }
+
+  if (message === 'Bạn có nhóm đơn hàng mới cần giao') {
+    return 'You have a new delivery order group';
+  }
+
+  return message;
+};
 
 type NotificationScreenRouteProp = RouteProp<RootStackParamList, "Notification">;
 
@@ -42,6 +68,7 @@ const NotificationScreen: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [showNotifications, setShowNotifications] = useState<boolean>(true);
   const modalRef = useRef(null);
+  const { language } = useShipperStore();
   const { t } = useTranslation()
 
   const fetchNotifications = async () => {
@@ -59,7 +86,7 @@ const NotificationScreen: React.FC = () => {
       setNotifications(data);
       setUnreadCount(data?.filter((noti) => !noti.isRead).length);
     } catch (error) {
-      console.error("Lỗi khi lấy danh sách thông báo:", error);
+      console.log("Lỗi khi lấy danh sách thông báo:", error);
     }
   };
 
@@ -86,7 +113,8 @@ const NotificationScreen: React.FC = () => {
 
   const handleNotificationClick = async (
     notificationId: string,
-    shipmentId: number
+    shipmentId: number,
+    message?: string
   ) => {
     try {
       const token = await AsyncStorage.getItem('access_token');
@@ -98,6 +126,12 @@ const NotificationScreen: React.FC = () => {
         },
       });
       fetchNotifications();
+
+      // ✅ Không điều hướng nếu là thông báo đăng nhập từ nơi khác
+      if (message === 'Tài khoản của bạn đã đăng nhập ở nơi khác') {
+        return;
+      }
+
       navigation.navigate("ShipmentDetails", { shipmentId: Number(shipmentId) });
     } catch (error) {
       console.error("Lỗi khi đánh dấu thông báo là đã đọc:", error);
@@ -135,12 +169,12 @@ const NotificationScreen: React.FC = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('common.noti')}</Text>
         <TouchableOpacity
-        style={[styles.markAllButton, unreadCount === 0 && styles.markAllButton]}
-        onPress={handleMarkAllAsRead}
-        disabled={unreadCount === 0}
-      >
-        <IconM name="done-all" size={20} color="black" />
-      </TouchableOpacity>
+          style={[styles.markAllButton, unreadCount === 0 && styles.markAllButton]}
+          onPress={handleMarkAllAsRead}
+          disabled={unreadCount === 0}
+        >
+          <IconM name="done-all" size={20} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Danh sách thông báo */}
@@ -150,7 +184,7 @@ const NotificationScreen: React.FC = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[styles.notificationItem, item.isRead && styles.read]}
-            onPress={() => handleNotificationClick(item.id, item.shipmentId)}
+            onPress={() => handleNotificationClick(item.id, item.shipmentId, item.message)}
           >
             <View style={styles.notificationContent}>
               <Image
@@ -159,7 +193,7 @@ const NotificationScreen: React.FC = () => {
               />
 
               <View style={styles.textContainer}>
-                <Text style={styles.message}>{item.message}</Text>
+                <Text style={styles.message}>{getTranslatedMessage(item.message, language)}</Text>
                 <Text style={styles.time}>{item.time}</Text>
               </View>
             </View>
@@ -210,11 +244,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-   
+
   },
   headerTitle: {
     fontSize: 24,
-    fontFamily:FONTFAMILY.lobster_regular,
+    fontFamily: FONTFAMILY.lobster_regular,
     color: "#333",
   },
   markAllButton: {
@@ -224,7 +258,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-   
+
   },
   markAllText: {
     color: "white",
@@ -253,21 +287,21 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 24,
-    fontFamily:FONTFAMILY.dongle_regular,
-    lineHeight:22,
+    fontFamily: FONTFAMILY.dongle_regular,
+    lineHeight: 22,
     color: "#424242",
   },
   time: {
     fontSize: 20,
-    fontFamily:FONTFAMILY.dongle_light,
+    fontFamily: FONTFAMILY.dongle_light,
     color: "#757575",
-    
+
   },
   emptyText: {
     textAlign: "center",
     fontSize: 26,
     color: "#9E9E9E",
-    fontFamily:FONTFAMILY.dongle_regular,
+    fontFamily: FONTFAMILY.dongle_regular,
   },
 });
 

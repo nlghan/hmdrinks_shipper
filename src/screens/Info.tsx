@@ -159,7 +159,7 @@ const Info: React.FC = () => {
 
       setPreviewImage(userInfo.avatar || "");
     } catch (err) {
-      console.error("❌ Lỗi khi lấy thông tin người dùng:", err);
+      console.log("❌ Lỗi khi lấy thông tin người dùng:", err);
       setError("Không thể lấy thông tin người dùng.");
     } finally {
       setLoading(false);
