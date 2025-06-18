@@ -30,16 +30,16 @@ const getTranslatedMessage = (message: string, language: string) => {
         return 'You have a new order';
     }
 
-    if (message === 'Bạn có nhóm đơn mới') {
-        return 'You have a new order group';
+    if (message === 'Bạn có đơn nhóm mới') {
+        return 'You have a new group order';
     }
 
     if (message === 'Bạn có đơn hàng mới cần giao') {
         return 'You have a new delivery order';
     }
 
-    if (message === 'Bạn có nhóm đơn hàng mới cần giao') {
-        return 'You have a new delivery order group';
+    if (message === 'Bạn có đơn hàng nhóm mới cần giao') {
+        return 'You have a new delivery group order';
     }
 
     return message;
