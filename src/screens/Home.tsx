@@ -271,7 +271,6 @@ const HomeShipper = () => {
         data: error.response?.data,
       });
 
-      Alert.alert('Lỗi', 'Không thể kích hoạt trạng thái sẵn sàng.');
     }
   };
 
@@ -312,7 +311,7 @@ const HomeShipper = () => {
         <Text style={styles.shipmentText}>{t('address')}: {shipment.address}</Text>
         <Text style={styles.shipmentText}>{t('phone')}: {shipment.phoneNumber}</Text>
         <Text style={styles.shipmentText}>{t('shipmentStatus')}: {shipment.status}</Text>
-        <Text style={styles.shipmentText}>{t('order.receiveDate')}: {shipment.dateCreated}</Text>
+        <Text style={styles.shipmentText}>{t('order.orderDate')}: {shipment.dateCreated}</Text>
 
         <View style={styles.buttonRow}>
           <Button

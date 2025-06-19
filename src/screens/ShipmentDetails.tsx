@@ -18,6 +18,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from "../navigation/RootStackParamList";
 import { useFetchData } from '../components/FetchDataContext';
 import CustomModalConfirm from '../styles/CustomModalConfirm';
+import NotificationModal from '../components/NotificationModal';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export interface OrderItem {
@@ -69,6 +70,8 @@ const ShipmentDetails = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState('');
+    const [modalVisible1, setModalVisible1] = useState(false);
+    const [confirmMessage1, setConfirmMessage1] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [currentStatus, setCurrentStatus] = useState('');
     const [note, setNote] = useState(shipment?.note || '');
@@ -146,17 +149,19 @@ const ShipmentDetails = () => {
         fetchShipmentDetail();
     }, [shipmentId, language]);
 
-    const handleStatusChange = async (shipmentId: number | undefined,
+    const handleStatusChange = async (
+        shipmentId: number | undefined,
         newStatus: string,
         fetchShipmentDetail: () => void,
-        setError: (error: string) => void) => {
+        setError: (error: string) => void
+    ): Promise<boolean> => {
         const token = await AsyncStorage.getItem('access_token');
         if (!token) {
             const msg = language === 'EN'
                 ? 'Please log in again.'
                 : 'Vui lòng đăng nhập lại.';
             setError(msg);
-            return;
+            return false;
         }
 
         if (!userId) {
@@ -164,9 +169,21 @@ const ShipmentDetails = () => {
                 ? 'Unable to identify UserId.'
                 : 'Không thể xác định UserId.';
             setError(msg);
-            return;
+            return false;
         }
-        setNote(''); // Reset ghi chú khi xác nhận trạng thái mới
+
+        // 🔴 Kiểm tra điều kiện: nếu chọn SUCCESS hoặc CANCELLED mà chưa phải SHIPPING → không cho tiếp tục
+        if ((newStatus === 'SUCCESS' || newStatus === 'CANCELLED') && shipment?.status !== 'SHIPPING') {
+            const msg = language === 'EN'
+                ? 'You must set the status to SHIPPING before selecting SUCCESS or CANCELLED.'
+                : 'Bạn phải chọn trạng thái Đang giao trước khi chọn Đã giao hoặc Hủy.';
+            setConfirmMessage1(msg);
+            setModalVisible1(true);
+            return false; // báo lỗi và dừng
+        }
+
+        setNote(''); // Reset ghi chú
+
         try {
             let response;
 
@@ -221,14 +238,18 @@ const ShipmentDetails = () => {
                 );
                 console.log('Status updated:', response.data);
             }
+
+            return true; // ✅ thành công
         } catch (error) {
             console.error(`Error updating status (${newStatus}):`, error);
             const msg = language === 'EN'
                 ? 'Unable to update status of the order.'
                 : 'Không thể cập nhật trạng thái đơn hàng.';
             setError(msg);
+            return false; // ❌ lỗi
         }
     };
+
 
     const handleUpdateNote = async (
         shipmentId: number,
@@ -331,36 +352,37 @@ const ShipmentDetails = () => {
     }, [shipment]);
 
 
-    const handleModalConfirm = async () => {
-        // Nếu trạng thái là CANCELLED nhưng chưa nhập ghi chú thì chặn lại
-        if (currentStatus === 'CANCELLED' && note.trim() === '') {
-            setNoteError(true); // đánh dấu lỗi
-            return;
-        }
+const handleModalConfirm = async () => {
+    if (!currentStatus) return;
+
+    if (currentStatus === 'CANCELLED' && note.trim() === '') {
+        setNoteError(true);
+        return;
+    }
+    setModalVisible(false); // ✅ Chỉ đóng khi thành công
+    const success = await handleStatusChange(
+        shipment?.shipmentId,
+        currentStatus,
+        fetchShipmentDetail,
+        setError
+    );
+
+    if (!success) return; // ⛔ Không đóng modal nếu sai logic (ví dụ: đang ở WAITING mà chọn CANCELLED)
 
 
-        setModalVisible(false);
 
-        // Gọi API cập nhật trạng thái đơn hàng
-        await handleStatusChange(
-            shipment?.shipmentId,
-            currentStatus,
-            fetchShipmentDetail,
-            setError
+    if (currentStatus === 'CANCELLED' && shipment?.shipmentId) {
+        await handleUpdateNote(
+            shipment.shipmentId,
+            note,
+            setError,
+            fetchShipmentDetail
         );
+    }
 
-        // Nếu trạng thái là CANCELLED thì gọi thêm API cập nhật ghi chú
-        if (currentStatus === 'CANCELLED' && shipment?.shipmentId) {
-            await handleUpdateNote(
-                shipment.shipmentId,
-                note,
-                setError,
-                fetchShipmentDetail
-            );
-        }
+    fetchData(1);
+};
 
-        fetchData(1); // Làm mới danh sách đơn hàng
-    };
 
 
     return (
@@ -531,6 +553,12 @@ const ShipmentDetails = () => {
                         cancelText={language === 'VN' ? 'Hủy' : 'Cancel'}
                         confirmText={language === 'VN' ? 'Xác nhận' : 'Confirm'}
                     />
+                    <NotificationModal
+                        visible={modalVisible1}
+                        message={confirmMessage1}
+                        onClose={() => setModalVisible1(false)}
+                    />
+
                 </ScrollView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
