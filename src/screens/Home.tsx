@@ -19,6 +19,8 @@ import { RootStackParamList } from "../navigation/RootStackParamList";
 import NotificationPopup from '../components/NotificationPopup';
 import Notification from '../components/Notification';
 import { useFetchData } from '../components/FetchDataContext';
+import EmptyListAnimation from '../components/EmptyListAnimation';
+import axios from 'axios';
 
 // Định nghĩa interface cho Shipment
 interface Shipment {
@@ -44,7 +46,7 @@ const HomeShipper = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [data, setData] = useState<Shipment[]>([]);
   const [filteredData, setFilteredData] = useState<Shipment[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<'SUCCESS' | 'SHIPPING' | 'WAITING' | 'CANCELLED'>('SHIPPING');
+  const [selectedStatus, setSelectedStatus] = useState<'SUCCESS' | 'SHIPPING' | 'WAITING' | 'CANCELLED'>('WAITING');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -61,10 +63,10 @@ const HomeShipper = () => {
     CANCELLED: '#b3796f',
   };
   const statusConfig = [
-    { status: 'WAITING', icon: 'hourglass-empty', title: t('shipper.needShip') },
-    { status: 'SHIPPING', icon: 'local-shipping', title: t('shipper.waitShip') },
-    { status: 'SUCCESS', icon: 'check-circle', title: t('shipper.successShip') },
-    { status: 'CANCELLED', icon: 'cancel', title: t('shipper.cancelShip') },
+    { status: 'WAITING', icon: 'hourglass-empty', title: t('order.title2') },
+    { status: 'SHIPPING', icon: 'local-shipping', title: t('order.title1') },
+    { status: 'SUCCESS', icon: 'check-circle', title: t('anaContent.complete') },
+    { status: 'CANCELLED', icon: 'cancel', title: t('order.title3') },
   ] as const;
 
   const fetchData = async (page: number, status: string = selectedStatus, type: string = 'shipment') => {
@@ -184,15 +186,96 @@ const HomeShipper = () => {
     fetchData(1, status);
   };
 
-  const handleMapDirection = (shipmentId: string, status: string) => {
+  const handleMapDirection = (shipmentId: string, status: string, isGroup?: boolean) => {
     const id = Number(shipmentId);
     if (!isNaN(id)) {
-      navigation.navigate('DirectionScreen', {
-        shipmentId: id,
-        status: status,
+      if (isGroup) {
+        navigation.navigate('DirectionGroupScreen', {
+          shipmentId: id,
+          status: status,
+        });
+      } else {
+        navigation.navigate('DirectionScreen', {
+          shipmentId: id,
+          status: status,
+        });
+      }
+    }
+  };
+
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
+
+  const checkAvailabilityStatus = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token || !userId?.userId) return;
+
+      const response = await axiosInstance.get(
+        `/shipper-attendance/get-status?userId=${userId.userId}`,
+        {
+          headers: {
+            Accept: '*/*',
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: 'text', // 👈 Quan trọng: để nhận response dạng text
+        }
+      );
+
+      const status = response.data?.trim(); // "available" hoặc "busy"
+      setIsAvailable(status === 'available');
+      console.log('Shipper status:', status);
+    } catch (error: any) {
+      console.error('Lỗi khi kiểm tra trạng thái sẵn sàng:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
       });
     }
   };
+
+  useEffect(() => {
+  checkAvailabilityStatus();
+}, [selectedStatus]);
+
+
+
+  const activateAvailable = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Lỗi', 'Vui lòng đăng nhập lại');
+        return;
+      }
+
+      const payload = { id: userId.userId }; // ✅ ĐÚNG: chỉ gửi số userId
+
+      const response = await axiosInstance.post(
+        '/shipper-attendance/activate-available',
+        payload,
+        {
+          headers: {
+            Accept: '*/*',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('Kích hoạt thành công:', response.data);
+      setIsAvailable(true);
+      fetchAllData(1, selectedStatus);
+    } catch (error: any) {
+      console.error('Lỗi khi gọi activateAvailable:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+
+      Alert.alert('Lỗi', 'Không thể kích hoạt trạng thái sẵn sàng.');
+    }
+  };
+
+
 
 
   const renderShipment = (shipment: Shipment) => {
@@ -203,8 +286,12 @@ const HomeShipper = () => {
         key={shipment.shipmentId}
         onPress={() => {
           const shipmentId = Number(shipment.shipmentId); // Chuyển shipmentId thành số (number)
-          if (!isNaN(shipmentId)) {
+          if (!isNaN(shipmentId) && shipment.isGroup) {
+            navigation.navigate('ShipmentGroupDetails', { shipmentId });
+          } else if (!shipment.isGroup) {
             navigation.navigate('ShipmentDetails', { shipmentId });
+
+
           } else {
             console.error('Invalid shipmentId');
           }
@@ -241,8 +328,7 @@ const HomeShipper = () => {
             mode="outlined"
             style={[styles.outlinedButton, { borderColor: color }]}
             textColor={color}
-            labelStyle={{ fontFamily: FONTFAMILY.lobster_regular}}
-            onPress={() => handleMapDirection(shipment.shipmentId, shipment.status)}
+            onPress={() => handleMapDirection(shipment.shipmentId, shipment.status, shipment.isGroup)}
           >
             {t('route')}
           </Button>
@@ -288,13 +374,18 @@ const HomeShipper = () => {
           {currentStatusConfig ? currentStatusConfig.title : ''}
         </Text>
 
-
         {loading ? (
           <ActivityIndicator size="large" color="#FFA983" />
         ) : error ? (
           <Text style={styles.errorText}>{error}</Text>
         ) : filteredData.length === 0 ? (
-          <Text style={styles.emptyText}>{t('dashboardContent.noOrder')}</Text>
+          !isAvailable ? (
+            <TouchableOpacity onPress={activateAvailable}>
+              <EmptyListAnimation title={t('active')} />
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.emptyText}>{t('dashboardContent.noOrder')}</Text>
+          )
         ) : (
           filteredData.map(renderShipment)
         )}

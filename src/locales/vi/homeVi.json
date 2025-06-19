@@ -12,6 +12,7 @@
     "login": "Đăng Nhập",
     "signUp": "Đăng Ký",
     "grOrderTitle": "- ĐƠN HÀNG NHÓM",
+    "active":"Sẵng sàng nhận đơn",
     "ana": {
         "orderNumber": "Số đơn hàng",
         "orders": "đơn",
@@ -490,7 +491,8 @@
         "addCmt": "Thêm đánh giá",
         "editCmt": "Chỉnh sửa đánh giá",
         "confirmDelete": "Xóa đánh giá",
-        "areYouSure": "Bạn chắn chắn muốn xóa đánh giá này?"
+        "areYouSure": "Bạn chắn chắn muốn xóa đánh giá này?",
+        "route": "Chi tiết lộ trình"
     },
     "productContent": {
         "page": "Trang",
