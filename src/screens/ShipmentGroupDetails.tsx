@@ -167,10 +167,12 @@ const ShipmentGroupDetails = () => {
         fetchShipmentDetail();
     }, [shipmentId, language]);
 
-    const handleStatusChange = async (shipmentId: number | undefined,
+    const handleStatusChange = async (
+        shipmentId: number | undefined,
         newStatus: string,
         fetchShipmentDetail: () => void,
-        setError: (error: string) => void) => {
+        setError: (error: string) => void
+    ) => {
         const token = await AsyncStorage.getItem('access_token');
         if (!token) {
             const msg = language === 'EN'
@@ -187,13 +189,26 @@ const ShipmentGroupDetails = () => {
             setError(msg);
             return;
         }
-        setNote(''); // Reset ghi chú khi xác nhận trạng thái mới
-        try {
-            let response;
 
-            if (newStatus === 'SUCCESS') {
-                response = await axiosInstance.post(
-                    `/shipment-group/activate/success`,
+        setNote(''); // Reset ghi chú nếu có
+
+        try {
+            // 1. Lấy lại shipment detail để kiểm tra shipper
+            const res = await axiosInstance.get(
+                `/shipment-group/view/${shipmentId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const shipmentDetail = res.data;
+
+            // 2. Nếu chưa có shipperId → nhận đơn trước
+            if (!shipmentDetail.shipperId) {
+                console.log('[DEBUG] Không có shipper → Gọi nhận đơn');
+                await axiosInstance.post(
+                    `/shipment-group/activate/receiving`,
                     { userId, shipmentId },
                     {
                         headers: {
@@ -202,43 +217,60 @@ const ShipmentGroupDetails = () => {
                         },
                     }
                 );
-                console.log('API response (SUCCESS):', response.data);
-                fetchShipmentDetail();
-            } else if (newStatus === 'CANCELLED') {
-                response = await axiosInstance.post(
-                    `/shipment-group/activate/cancel`,
-                    { userId, shipmentId },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-                console.log('API response (CANCELLED):', response.data);
-                fetchShipmentDetail();
-            } else if (newStatus === 'SHIPPING') {
-                response = await axiosInstance.post(
-                    `/shipment-group/activate/shipping`,
-                    { userId, shipmentId },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-                console.log('API response (SHIPPING):', response.data);
-                fetchShipmentDetail();
+                console.log('[RECEIVING] Đã nhận đơn thành công');
             }
-        } catch (error) {
-            console.error(`Error updating status (${newStatus}):`, error);
+
+            // 3. Gọi API tương ứng với trạng thái
+            let endpoint = '';
+            switch (newStatus) {
+                case 'SHIPPING':
+                    endpoint = '/shipment-group/activate/shipping';
+                    break;
+                case 'SUCCESS':
+                    endpoint = '/shipment-group/activate/success';
+                    break;
+                case 'CANCELLED':
+                    endpoint = '/shipment-group/activate/cancel';
+                    break;
+                default:
+                    console.warn('Trạng thái không hợp lệ:', newStatus);
+                    return;
+            }
+
+            const response = await axiosInstance.post(
+                endpoint,
+                { userId, shipmentId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            console.log(`[API ${newStatus}] Thành công:`, response.data);
+            fetchShipmentDetail();
+        } catch (error: any) {
+            console.error(`Lỗi khi cập nhật trạng thái (${newStatus}):`, error);
+
+            // Log chi tiết nếu là lỗi Axios
+            if (error.response) {
+                console.error('Status Code:', error.response.status);
+                console.error('Response Data:', error.response.data);
+            } else if (error.request) {
+                console.error('Không nhận được phản hồi từ server:', error.request);
+            } else {
+                console.error('Lỗi không xác định:', error.message);
+            }
+
             const msg = language === 'EN'
                 ? 'Unable to update status of the order.'
                 : 'Không thể cập nhật trạng thái đơn hàng.';
             setError(msg);
         }
+
     };
+
 
     const handleUpdateNote = async (
         shipmentId: number,
